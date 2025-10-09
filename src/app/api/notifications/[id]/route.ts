@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/config/firebase-admin';
+import { db } from '@/config/firebase-edge';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { UpdateNotificationRequest, Notification } from '@/types/notification';
 
 export const runtime = 'edge';
@@ -21,9 +22,10 @@ export async function GET(
       );
     }
 
-    const doc = await adminDb.collection(COLLECTION_NAME).doc(id).get();
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const docSnap = await getDoc(docRef);
 
-    if (!doc.exists) {
+    if (!docSnap.exists()) {
       return NextResponse.json(
         { error: 'Notification not found' },
         { status: 404 }
@@ -31,8 +33,8 @@ export async function GET(
     }
 
     const notification: Notification = {
-      id: doc.id,
-      ...doc.data(),
+      id: docSnap.id,
+      ...docSnap.data(),
     } as Notification;
 
     return NextResponse.json(notification);
@@ -62,9 +64,10 @@ export async function PUT(
     }
 
     // Check if notification exists
-    const doc = await adminDb.collection(COLLECTION_NAME).doc(id).get();
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const docSnap = await getDoc(docRef);
     
-    if (!doc.exists) {
+    if (!docSnap.exists()) {
       return NextResponse.json(
         { error: 'Notification not found' },
         { status: 404 }
@@ -78,14 +81,14 @@ export async function PUT(
     };
 
     // Update the document
-    await adminDb.collection(COLLECTION_NAME).doc(id).update(updateData);
+    await updateDoc(docRef, updateData);
 
     // Fetch updated document
-    const updatedDoc = await adminDb.collection(COLLECTION_NAME).doc(id).get();
+    const updatedDocSnap = await getDoc(docRef);
     
     const notification: Notification = {
-      id: updatedDoc.id,
-      ...updatedDoc.data(),
+      id: updatedDocSnap.id,
+      ...updatedDocSnap.data(),
     } as Notification;
 
     return NextResponse.json(notification);
@@ -114,9 +117,10 @@ export async function DELETE(
     }
 
     // Check if notification exists
-    const doc = await adminDb.collection(COLLECTION_NAME).doc(id).get();
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const docSnap = await getDoc(docRef);
     
-    if (!doc.exists) {
+    if (!docSnap.exists()) {
       return NextResponse.json(
         { error: 'Notification not found' },
         { status: 404 }
@@ -124,7 +128,7 @@ export async function DELETE(
     }
 
     // Delete the document
-    await adminDb.collection(COLLECTION_NAME).doc(id).delete();
+    await deleteDoc(docRef);
 
     return NextResponse.json({ message: 'Notification deleted successfully' });
   } catch (error) {

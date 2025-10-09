@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/config/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
-import bcrypt from 'bcryptjs';
+import { db } from '@/config/firebase-edge';
+import { collection, query, where, getDocs, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { hashPassword } from '@/lib/crypto-edge';
 
 export const runtime = 'edge';
 
 /**
- * API Route for updating students with bcrypt password hashing
- * Connects to Firebase Emulator in development, Live Firebase in production
+ * API Route for updating students with Web Crypto password hashing
+ * Compatible with Edge Runtime for Cloudflare Pages
  * POST /api/students/update
  */
 export async function POST(request: NextRequest) {
@@ -22,24 +22,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const studentRef = adminDb.collection('students').doc(studentId);
+    const studentRef = doc(db, 'students', studentId);
 
     // Check if email is being updated and if it already exists for another student
     if (studentData.email) {
       // Get the current student document
-      const currentDoc = await studentRef.get();
-      const currentData = currentDoc.exists ? currentDoc.data() : null;
+      const currentDoc = await getDoc(studentRef);
+      const currentData = currentDoc.exists() ? currentDoc.data() : null;
 
       // If the email is being changed
       if (currentData && currentData.email !== studentData.email) {
         // Query for any other student with the same email
-        const emailQuery = await adminDb
-          .collection('students')
-          .where('email', '==', studentData.email)
-          .get();
+        const emailQuery = query(
+          collection(db, 'students'),
+          where('email', '==', studentData.email)
+        );
+        const emailSnapshot = await getDocs(emailQuery);
 
         // If another student with this email exists (excluding this student)
-        const emailExists = emailQuery.docs.some(doc => doc.id !== studentId);
+        const emailExists = emailSnapshot.docs.some(doc => doc.id !== studentId);
 
         if (emailExists) {
           return NextResponse.json(
@@ -52,14 +53,14 @@ export async function POST(request: NextRequest) {
     // Prepare update data
     const updateData: any = {
       ...studentData,
-      updated_at: FieldValue.serverTimestamp(),
+      updated_at: serverTimestamp(),
     };
 
     // Only hash and update password if a new password is provided
     if (password && password.trim() !== '') {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await hashPassword(password);
       updateData.password = hashedPassword;
-      console.log('🔐 Password updated with bcrypt hash');
+      console.log('🔐 Password updated with Web Crypto hash');
     }
 
     // Remove undefined/null values
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       Object.entries(updateData).filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );
 
-    await studentRef.update(cleanedData);
+    await updateDoc(studentRef, cleanedData);
 
     console.log('✅ Student updated:', studentId);
 

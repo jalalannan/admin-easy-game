@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/config/firebase-admin';
+import { db } from '@/config/firebase-edge';
+import { 
+  collection, 
+  query, 
+  where, 
+  orderBy, 
+  limit as firestoreLimit, 
+  getDocs, 
+  addDoc,
+  Timestamp,
+  QueryConstraint
+} from 'firebase/firestore';
 import { 
   CreateNotificationRequest, 
   NotificationFilters, 
@@ -26,49 +37,50 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate') || '';
     const endDate = searchParams.get('endDate') || '';
 
-    // Build Firestore query (type as Query to allow where/orderBy chaining)
-    let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData> = adminDb.collection(COLLECTION_NAME);
+    // Build Firestore query
+    const constraints: QueryConstraint[] = [];
 
     // Apply filters
     if (userType) {
-      query = query.where('userType', '==', userType);
+      constraints.push(where('userType', '==', userType));
     }
     
     if (type) {
-      query = query.where('type', '==', type);
+      constraints.push(where('type', '==', type));
     }
     
     if (requestType) {
-      query = query.where('requestType', '==', requestType);
+      constraints.push(where('requestType', '==', requestType));
     }
 
     // Date range filter
     if (startDate) {
-      query = query.where('createdAt', '>=', new Date(startDate));
+      constraints.push(where('createdAt', '>=', new Date(startDate)));
     }
     
     if (endDate) {
-      query = query.where('createdAt', '<=', new Date(endDate));
+      constraints.push(where('createdAt', '<=', new Date(endDate)));
     }
 
     // Order by creation date (newest first)
-    query = query.orderBy('createdAt', 'desc');
+    constraints.push(orderBy('createdAt', 'desc'));
 
-    // Get total count for pagination
-    const totalSnapshot = await query.get();
-    const total = totalSnapshot.size;
-
-    // Apply pagination
-    const offset = (page - 1) * limit;
-    query = query.offset(offset).limit(limit);
+    // Create query
+    const notificationsQuery = query(
+      collection(db, COLLECTION_NAME),
+      ...constraints
+    );
 
     // Execute query
-    const snapshot = await query.get();
+    const snapshot = await getDocs(notificationsQuery);
     
     let notifications = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
     })) as Notification[];
+
+    // Get total count
+    const total = notifications.length;
 
     // Apply text search filter (client-side for simplicity)
     if (search) {
@@ -79,8 +91,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Apply pagination (client-side)
+    const offset = (page - 1) * limit;
+    const paginatedNotifications = notifications.slice(offset, offset + limit);
+
     const response: NotificationListResponse = {
-      notifications,
+      notifications: paginatedNotifications,
       total,
       page,
       limit,
@@ -117,7 +133,7 @@ export async function POST(request: NextRequest) {
       updatedAt: now,
     };
 
-    const docRef = await adminDb.collection(COLLECTION_NAME).add(notificationData);
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), notificationData);
     
     const notification: Notification = {
       id: docRef.id,

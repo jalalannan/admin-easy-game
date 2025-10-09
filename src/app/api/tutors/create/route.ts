@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb } from '@/config/firebase-admin';
-import { FieldValue } from 'firebase-admin/firestore';
-import bcrypt from 'bcryptjs';
+import { db } from '@/config/firebase-edge';
+import { collection, query, where, limit, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { hashPassword } from '@/lib/crypto-edge';
 
 export const runtime = 'edge';
 
 /**
- * API Route for creating tutors with bcrypt password hashing
- * Connects to Firebase Emulator in development, Live Firebase in production
+ * API Route for creating tutors with Web Crypto password hashing
+ * Compatible with Edge Runtime for Cloudflare Pages
  * POST /api/tutors/create
  */
 export async function POST(request: NextRequest) {
@@ -22,21 +22,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash the password with bcrypt (10 rounds)
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create tutor document reference
-    const tutorRef = adminDb.collection('tutors').doc();
-
     // Check if email already exists
     if (tutorData.email) {
-        const emailQuery = await adminDb
-            .collection('tutors')
-            .where('email', '==', tutorData.email)
-            .limit(1)
-            .get();
+        const emailQuery = query(
+            collection(db, 'tutors'),
+            where('email', '==', tutorData.email),
+            limit(1)
+        );
+        const emailSnapshot = await getDocs(emailQuery);
             
-        if (!emailQuery.empty) {
+        if (!emailSnapshot.empty) {
             return NextResponse.json(
                 { success: false, error: 'A tutor with this email already exists' },
                 { status: 409 }
@@ -46,19 +41,27 @@ export async function POST(request: NextRequest) {
 
     // Check if phone already exists
     if (tutorData.phone) {
-        const phoneQuery = await adminDb
-            .collection('tutors')
-            .where('phone', '==', tutorData.phone)
-            .limit(1)
-            .get();
+        const phoneQuery = query(
+            collection(db, 'tutors'),
+            where('phone', '==', tutorData.phone),
+            limit(1)
+        );
+        const phoneSnapshot = await getDocs(phoneQuery);
 
-        if (!phoneQuery.empty) {
+        if (!phoneSnapshot.empty) {
             return NextResponse.json(
                 { success: false, error: 'A tutor with this phone already exists' },
                 { status: 409 }
             );
         }
     }
+
+    // Hash the password with Web Crypto API
+    const hashedPassword = await hashPassword(password);
+
+    // Create tutor document reference
+    const tutorRef = doc(collection(db, 'tutors'));
+
     // Prepare tutor data with hashed password
     const newTutor = {
       ...tutorData,
@@ -70,8 +73,8 @@ export async function POST(request: NextRequest) {
       verified: '0',
       token: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
       test_user: '0',
-      created_at: FieldValue.serverTimestamp(),
-      updated_at: FieldValue.serverTimestamp(),
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
     };
 
     // Remove undefined/null values
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
       Object.entries(newTutor).filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );
 
-    await tutorRef.set(cleanedTutor);
+    await setDoc(tutorRef, cleanedTutor);
 
     console.log('✅ Tutor created with hashed password:', tutorRef.id);
 
