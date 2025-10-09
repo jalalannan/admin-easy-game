@@ -7,6 +7,8 @@ import {
   Notification 
 } from '@/types/notification';
 
+export const runtime = 'edge';
+
 const COLLECTION_NAME = 'notifications';
 
 // GET /api/notifications - Fetch notifications with filters and pagination

@@ -3,6 +3,8 @@ import { adminDb } from '@/config/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import bcrypt from 'bcryptjs';
 
+export const runtime = 'edge';
+
 /**
  * API Route for creating students with bcrypt password hashing
  * Connects to Firebase Emulator in development, Live Firebase in production

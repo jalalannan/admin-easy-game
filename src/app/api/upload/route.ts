@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
+export const runtime = 'edge';
+
 // Initialize S3 client for DigitalOcean Spaces
 const s3Client = new S3Client({
   endpoint: `https://${process.env.DO_ENDPOINT || 'nyc3.digitaloceanspaces.com'}`,
