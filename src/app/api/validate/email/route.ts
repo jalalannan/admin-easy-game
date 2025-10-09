@@ -1,29 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/config/firebase-edge';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { adminDb } from '@/config/firebase-admin';
 
 export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, excludeId, collection: collectionName } = body;
+    const { email, excludeId, collection } = body;
 
-    if (!email || !collectionName) {
+    if (!email || !collection) {
       return NextResponse.json(
         { success: false, error: 'Email and collection are required' },
         { status: 400 }
       );
     }
 
-    console.log(`🔍 Checking if email exists: ${email} in ${collectionName}`);
+    console.log(`🔍 Checking if email exists: ${email} in ${collection}`);
 
     // Check in the specified collection
-    const emailQuery = query(
-      collection(db, collectionName),
-      where('email', '==', email)
-    );
-    const snapshot = await getDocs(emailQuery);
+    let query = adminDb.collection(collection).where('email', '==', email);
+    const snapshot = await query.get();
 
     // Filter out the current record if excludeId is provided (for edit mode)
     const duplicates = snapshot.docs.filter(doc => doc.id !== excludeId);
@@ -35,7 +31,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         exists: true,
-        message: `This email is already registered in ${collectionName}`
+        message: `This email is already registered in ${collection}`
       });
     }
 

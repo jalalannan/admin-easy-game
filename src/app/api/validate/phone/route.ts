@@ -1,29 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/config/firebase-edge';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { adminDb } from '@/config/firebase-admin';
 
 export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { phone, phoneCountryCode, excludeId, collection: collectionName } = body;
+    const { phone, phoneCountryCode, excludeId, collection } = body;
 
-    if (!phone || !collectionName) {
+    if (!phone || !collection) {
       return NextResponse.json(
         { success: false, error: 'Phone and collection are required' },
         { status: 400 }
       );
     }
 
-    console.log(`🔍 Checking if phone exists: ${phoneCountryCode || ''}${phone} in ${collectionName}`);
+    console.log(`🔍 Checking if phone exists: ${phoneCountryCode || ''}${phone} in ${collection}`);
 
     // Check in the specified collection
-    const phoneQuery = query(
-      collection(db, collectionName),
-      where('phone', '==', phone)
-    );
-    const snapshot = await getDocs(phoneQuery);
+    let query = adminDb.collection(collection).where('phone', '==', phone);
+    const snapshot = await query.get();
 
     // Filter out the current record if excludeId is provided (for edit mode)
     // Also check if country code matches (if provided)
@@ -46,7 +42,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         exists: true,
-        message: `This phone number is already registered in ${collectionName}`
+        message: `This phone number is already registered in ${collection}`
       });
     }
 

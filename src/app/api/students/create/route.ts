@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/config/firebase-edge';
-import { collection, query, where, limit, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { hashPassword } from '@/lib/crypto-edge';
+import { adminDb } from '@/config/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
+import bcrypt from 'bcryptjs';
 
 export const runtime = 'edge';
 
 /**
- * API Route for creating students with Web Crypto password hashing
- * Compatible with Edge Runtime for Cloudflare Pages
+ * API Route for creating students with bcrypt password hashing
+ * Connects to Firebase Emulator in development, Live Firebase in production
  * POST /api/students/create
  */
 export async function POST(request: NextRequest) {
@@ -30,14 +30,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const emailQuery = query(
-      collection(db, 'students'),
-      where('email', '==', studentData.email),
-      limit(1)
-    );
-    const emailSnapshot = await getDocs(emailQuery);
+    const emailQuery = await adminDb
+      .collection('students')
+      .where('email', '==', studentData.email)
+      .limit(1)
+      .get();
 
-    if (!emailSnapshot.empty) {
+    if (!emailQuery.empty) {
       return NextResponse.json(
         { success: false, error: 'A student with this email already exists' },
         { status: 409 }
@@ -46,14 +45,13 @@ export async function POST(request: NextRequest) {
 
     // Check if phone_number already exists (if provided)
     if (studentData.phone_number) {
-      const phoneQuery = query(
-        collection(db, 'students'),
-        where('phone_number', '==', studentData.phone_number),
-        limit(1)
-      );
-      const phoneSnapshot = await getDocs(phoneQuery);
+      const phoneQuery = await adminDb
+        .collection('students')
+        .where('phone_number', '==', studentData.phone_number)
+        .limit(1)
+        .get();
 
-      if (!phoneSnapshot.empty) {
+      if (!phoneQuery.empty) {
         return NextResponse.json(
           { success: false, error: 'A student with this phone number already exists' },
           { status: 409 }
@@ -61,11 +59,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Hash the password with Web Crypto API
-    const hashedPassword = await hashPassword(password);
+    // Hash the password with bcrypt (10 rounds)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create student document reference
-    const studentRef = doc(collection(db, 'students'));
+    const studentRef = adminDb.collection('students').doc();
 
     // Prepare student data with hashed password
     const newStudent = {
@@ -79,8 +77,8 @@ export async function POST(request: NextRequest) {
       is_banned: '0',
       token: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
       test_user: '0',
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
+      created_at: FieldValue.serverTimestamp(),
+      updated_at: FieldValue.serverTimestamp(),
     };
 
     // Remove undefined/null values
@@ -88,7 +86,7 @@ export async function POST(request: NextRequest) {
       Object.entries(newStudent).filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );
 
-    await setDoc(studentRef, cleanedStudent);
+    await studentRef.set(cleanedStudent);
 
     console.log('✅ Student created with hashed password:', studentRef.id);
 
