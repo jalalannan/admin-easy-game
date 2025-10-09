@@ -312,27 +312,9 @@ export const useFirebaseAuthStore = create<AuthStore>()(
               isActive: data.isActive || false,
               createdAt: data.createdAt?.toDate() || new Date(),
               updatedAt: data.updatedAt?.toDate() || new Date(),
-              permissions: [], // Will be populated separately
+              permissions: data.permissions || [], // Permission IDs
             };
           });
-
-
-          // Fetch permissions for each role
-          for (const role of roles) {
-
-            const roleData = rolesSnapshot.docs.find(doc => doc.id === role.id)?.data();
-
-            if (roleData?.permissions && roleData.permissions.length > 0) {
-              const permissionsSnapshot = await getDocs(
-                query(collection(db, 'permissions'), where('__name__', 'in', roleData.permissions))
-              );
-
-              role.permissions = permissionsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-              })) as Permission[];
-            }
-          }
 
           set({ roles });
         } catch (error) {
@@ -480,14 +462,15 @@ export const useFirebaseAuthStore = create<AuthStore>()(
 
       // Permission checking
       hasPermission: (resource, action) => {
-        const { user, roles } = get();
+        const { user, roles, permissions } = get();
         if (!user) return false;
         // Check if user has any role with the required permission
         return user.roles.some(userRole => {
           const role = roles.find(r => r.id === userRole.roleId);
-          return role?.permissions.some(permission => 
-            permission.resource === resource && permission.action === action
-          );
+          return role?.permissions.some(permissionId => {
+            const permission = permissions.find(p => p.id === permissionId);
+            return permission?.resource === resource && permission?.action === action;
+          });
         });
       },
 

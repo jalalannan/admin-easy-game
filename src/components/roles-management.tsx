@@ -84,7 +84,7 @@ export default function RolesManagement() {
     setFormData({
       name: role.name,
       description: role.description,
-      permissions: role.permissions.map(p => p.id)
+      permissions: role.permissions.map((p: any) => p.id)
     });
     setIsEditDialogOpen(true);
   };
@@ -237,7 +237,7 @@ export default function RolesManagement() {
                 <div>
                   <h4 className="font-medium mb-2">Permissions:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {role.permissions.map((permission) => (
+                    {role.permissions.map((permission: any) => (
                       <Badge key={permission.id} variant="secondary">
                         {permission.resource}:{permission.action}
                       </Badge>

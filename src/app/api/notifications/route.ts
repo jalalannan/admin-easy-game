@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate') || '';
     const endDate = searchParams.get('endDate') || '';
 
-    // Build Firestore query
-    let query = adminDb.collection(COLLECTION_NAME);
+    // Build Firestore query (type as Query to allow where/orderBy chaining)
+    let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData> = adminDb.collection(COLLECTION_NAME);
 
     // Apply filters
     if (userType) {
