@@ -8,11 +8,11 @@ import { fetchWithProgress } from './api-progress';
 
 // Note: For production, move these to environment variables and use server-side upload
 const DIGITALOCEAN_CONFIG = {
-  accessKey: process.env.NEXT_PUBLIC_DO_ACCESS_KEY || 'DO00VGD7ETVFT6WLBMMV',
-  secretKey: process.env.NEXT_PUBLIC_DO_SECRET_KEY || '6KN1QxgURxFCGR5f0m37k0XFldVlgtzhrVYASa8wLA8',
-  bucket: process.env.NEXT_PUBLIC_DO_BUCKET || 'oureasygamestoreage',
-  endpoint: process.env.NEXT_PUBLIC_DO_ENDPOINT || 'nyc3.digitaloceanspaces.com',
-  region: process.env.NEXT_PUBLIC_DO_REGION || 'nyc3',
+  accessKey: process.env.DO_ACCESS_KEY || 'DO00VGD7ETVFT6WLBMMV',
+  secretKey: process.env.DO_SECRET_KEY || '6KN1QxgURxFCGR5f0m37k0XFldVlgtzhrVYASa8wLA8',
+  bucket: process.env.DO_BUCKET || 'oureasygamestoreage',
+  endpoint: process.env.DO_ENDPOINT || 'nyc3.digitaloceanspaces.com',
+  region: process.env.DO_REGION || 'nyc3',
 };
 
 /**
