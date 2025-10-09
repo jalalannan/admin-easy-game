@@ -1,7 +1,8 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/config/firebase-admin';
 
-export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
   try {

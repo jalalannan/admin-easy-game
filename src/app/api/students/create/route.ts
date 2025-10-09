@@ -1,9 +1,9 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/config/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import bcrypt from 'bcryptjs';
-
-export const runtime = 'edge';
 
 /**
  * API Route for creating students with bcrypt password hashing

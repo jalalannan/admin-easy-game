@@ -1,8 +1,8 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/config/firebase-admin';
 import { UpdateNotificationRequest, Notification } from '@/types/notification';
-
-export const runtime = 'edge';
 
 const COLLECTION_NAME = 'notifications';
 
