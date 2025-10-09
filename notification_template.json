@@ -1,0 +1,264 @@
+{
+    "notifications": [
+        {
+            "id": 1,
+            "title": "New Request Created",
+            "body": "A new request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 2,
+            "title": "New Exam Request Created",
+            "body": "A new exam request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "STUDENT",
+            "requestType": "EXAM",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 3,
+            "title": "New Rapid Q&A Request Created",
+            "body": "A new rapid Q&A request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "STUDENT",
+            "requestType": "SOS",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 4,
+            "title": "New Online session Request Created",
+            "body": "A new online session request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ONLINE",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 5,
+            "title": "You get a new bid",
+            "body": "A new bid was submitted for your request",
+            "type": "TUTORBIDREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 6,
+            "title": "Bid Rejected",
+            "body": "You rejected the tutor bid",
+            "type": "STUDENTREJECTBID",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 7,
+            "title": "Bid Updated",
+            "body": "The tutor updated his bid",
+            "type": "TUTORUPDATEBID",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 8,
+            "title": "Bid Accepted",
+            "body": "You accepted the tutor bid",
+            "type": "STUDENTACCEPTBID",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 9,
+            "title": "Request Ongoing",
+            "body": "Payment successful, request ongoing",
+            "type": "STUDENTPAYREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 10,
+            "title": "Request Completed",
+            "body": "Tutor completed the request, please check.",
+            "type": "TUTORCOMPLETEREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 11,
+            "title": "Request Rejected",
+            "body": "Request not done yet, waiting for tutor to complete.",
+            "type": "STUDENTREJECTCOMPLETE",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 12,
+            "title": "Request Completed",
+            "body": "Request completed successfully.",
+            "type": "STUDENTACCEPTCOMPLETE",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 13,
+            "title": "Request Cancelled",
+            "body": "You cancelled the request",
+            "type": "STUDENTCANCELREQUEST",
+            "userType": "STUDENT",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 14,
+            "title": "New Request Created",
+            "body": "A new request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 15,
+            "title": "New Exam Request Created",
+            "body": "A new exam request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "TUTOR",
+            "requestType": "EXAM",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 16,
+            "title": "New Rapid Q&A Request Created",
+            "body": "A new rapid Q&A request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "TUTOR",
+            "requestType": "SOS",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 17,
+            "title": "New Online session Request Created",
+            "body": "A new online session request has been created",
+            "type": "STUDENTCREATEREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ONLINE",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 18,
+            "title": "You bid on a request",
+            "body": "Your bid was submitted, waiting for student to check it.",
+            "type": "TUTORBIDREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 19,
+            "title": "Bid Rejected",
+            "body": "Student rejected your bid",
+            "type": "STUDENTREJECTBID",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 20,
+            "title": "Bid Updated",
+            "body": "You updated your bid, waiting for student to check it.",
+            "type": "TUTORUPDATEBID",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 21,
+            "title": "Bid Accepted",
+            "body": "Student accepted your bid",
+            "type": "STUDENTACCEPTBID",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 22,
+            "title": "Student pay for the request",
+            "body": "Student pay for the request, you can start working.",
+            "type": "STUDENTPAYREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 23,
+            "title": "Request Completed",
+            "body": "You completed the request, wait student to check it.",
+            "type": "TUTORCOMPLETEREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 24,
+            "title": "Request Rejected",
+            "body": "Student rejected your completion.",
+            "type": "STUDENTREJECTCOMPLETE",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 25,
+            "title": "Request Completed",
+            "body": "Student accepted your completion.",
+            "type": "STUDENTACCEPTCOMPLETE",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        },
+        {
+            "id": 26,
+            "title": "Request Cancelled",
+            "body": "Student cancelled the request",
+            "type": "STUDENTCANCELREQUEST",
+            "userType": "TUTOR",
+            "requestType": "ALL",
+            "createdAt": "2025-09-13T09:01:36.451Z",
+            "updatedAt": "2025-09-13T09:01:36.451Z"
+        }
+    ]
+}

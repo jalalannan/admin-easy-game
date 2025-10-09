@@ -1,0 +1,833 @@
+{
+    "id": "data",
+    "faqs": [
+    {
+        "id": "1",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Select “Online Tutoring”. Fill out the request form with details of the subject or topic you need help with. Tutors will reach out to ask questions and price your request. Once you accept an offer and pay, the tutoring session will be booked at the specified time. After completing the session, you’ll be asked to rate and review your tutor.</p>",
+        "user_type": "student",
+        "question": "How does the Online Tutoring process work?",
+        "updated_at": {
+        "_seconds": 1728569509,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "2",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Select “Exam Assistance”. Fill out the form with the exam details, including the subject and date. Tutors will review your request, request additional information, and provide price quotes. Once you accept an offer and make the payment, the tutor will prepare and assist you for the exam. After the exam assistance is completed, you’ll be asked to review and rate your tutor.</p>",
+        "user_type": "student",
+        "question": "How does the Exam Assistance process work?",
+        "updated_at": {
+        "_seconds": 1748585694,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "3",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Select “Project Assistance” as your service. Fill out the form, detailing the scope, deadlines, and requirements for your project. Tutors with expertise in your project area will review your request, ask questions, and provide pricing. Choose the best offer, complete the payment, and the tutor will begin working on your project. You can track progress and, once completed, confirm and rate the tutor.</p>",
+        "user_type": "student",
+        "question": "How does the Project Assistance process work?",
+        "updated_at": {
+        "_seconds": 1748586540,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "4",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Select “Homework Help” from the available services. Fill out the form with the subject, deadline, and details of your homework. Tutors will review your request, ask questions, and offer their bids with pricing. Accept the offer that suits you, make the payment, and the tutor will begin working on your homework. Once it’s completed, you can mark it as done and leave feedback.</p>",
+        "user_type": "student",
+        "question": "How does the Homework Help process work?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "5",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Select “Thesis Assistance” as your service.&nbsp;Fill out the form, including details of your thesis topic, deadlines, and any specific requirements. Qualified tutors will review your request, reach out to ask questions, and submit pricing offers. Choose the best offer, make the payment, and your tutor will begin assisting you with your thesis. You’ll receive support throughout the process, and once completed, you can confirm and rate your tutor.</p>",
+        "user_type": "student",
+        "question": "How does Thesis Assistance process work?",
+        "updated_at": {
+        "_seconds": 1748585721,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "6",
+        "created_at": {
+        "_seconds": 1676317398,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Choose “Rapid Q&amp;A Assistance” from the available services. Submit a brief form, including your specific question(s) or topic you need help with. Set a timer to indicate when you need the help. Our tutors will quickly review your request, provide you with the price, and ensure assistance within the set time. Once you accept an offer and make the payment, your tutor will send you the answers or assistance right away.</p>",
+        "user_type": "student",
+        "question": "How does Rapid Question & Answer Assistance service work?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "7",
+        "created_at": {
+        "_seconds": 1677679095,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>&nbsp; &nbsp;1. Submit Your Questions: Begin by selecting the “Rapid Q&amp;A Assistance” service and fill out a brief form with your questions or the topic you need help with.<br>&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;&nbsp;&nbsp;&nbsp;Set Your Timer: Indicate the timeframe within which you need the answers. This helps our tutors prioritize and deliver responses quickly.<br>&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;&nbsp;&nbsp;&nbsp;Receive Offers: Our tutors will review your request and provide you with pricing details. They will also confirm if they can assist within your specified timeframe.<br>&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;&nbsp;&nbsp;&nbsp;Confirm and Pay: Once you choose a tutor and make the payment, you’ll receive prompt answers or explanations based on your questions.<br>&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;&nbsp;&nbsp;&nbsp;Get Your Answers: The tutor will deliver the answers or necessary assistance within the agreed time frame, ensuring you get the support you need swiftly.</p>",
+        "user_type": "student",
+        "question": "What is Rapid Q&A Assistance?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "8",
+        "created_at": {
+        "_seconds": 1677679095,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>If you receive a low grade and believe it should be eligible for a refund, go to our customer support chat and follow these steps:</p><p>1.&nbsp;&nbsp;&nbsp;&nbsp;Provide Proof: Upload a screenshot of your grade and access to the grade report.<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;2.&nbsp;&nbsp;&nbsp;&nbsp;Submit Class Average: Include a screenshot showing the class average to help us assess the situation.<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;3. &nbsp; &nbsp;Upload your exam's answers (in case the request was an \"Exam Assistance<br>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4.&nbsp;&nbsp;&nbsp;&nbsp;Review Process: We will investigate the details and determine if a refund is applicable based on the provided evidence.</p><p>&nbsp;</p><p>Feel free to also contact us via WhatsApp for quicker assistance.</p>",
+        "user_type": "student",
+        "question": "What happens if i receive a low grade?",
+        "updated_at": {
+        "_seconds": 1748586076,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "9",
+        "created_at": {
+        "_seconds": 1677679226,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Our refund policy is based on the type of request and the deadline:</p><p>1.&nbsp;&nbsp; &nbsp;For requests confirmed by the student more than 72 hours in advance, we guarantee a minimum grade of B; if the grade is lower than a B but above the class average, no refund will be issued, while grades below both result in a 50% refund. A full refund is provided for failing grades.&nbsp;<br>2.&nbsp;&nbsp;&nbsp;&nbsp;For requests with a 48-Hour Deadline or Less: We guarantee a passing grade. If the final grade is below passing, you are eligible for a full refund.<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;3. &nbsp; &nbsp;For exams requests, if the student is unable to take pictures or fails to copy all answers, no refund will be issued.<br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Please note that once a correction has been made to your submission, no refunds will be issued under any circumstances; by proceeding with a correction, you acknowledge and agree to this no-refund policy.<br>&nbsp;</p>",
+        "user_type": "student",
+        "question": "What is the refund policy?",
+        "updated_at": {
+        "_seconds": 1748586421,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "10",
+        "created_at": {
+        "_seconds": 1677679226,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Typically, it takes around 24 to 48 hours to be paired with a tutor after you submit your request. However, depending on the complexity of the task and tutor availability, you may be matched with a tutor within just an hour or two. If you have an urgent request, we strive to expedite the process as much as possible.</p>",
+        "user_type": "student",
+        "question": "How long does it usually take to be paired with a tutor?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "11",
+        "created_at": {
+        "_seconds": 1677679226,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Typically, tutors prefer to provide their best price from the start, as they are aware that it’s a competitive bidding process. While most tutors may not be open to negotiating prices, you can explore multiple offers from different tutors to find the best option. If you believe a tutor might be slightly flexible on their rate, you can try negotiating. However, keep in mind that the initial offer is often the best price available.</p>",
+        "user_type": "student",
+        "question": "Is the price negotiable?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "12",
+        "created_at": {
+        "_seconds": 1677679226,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Contacting tutors outside the app is strictly prohibited. Tutors are required to adhere to an NDA that forbids them from exchanging personal contact information. Any outside communication will result in immediate cancellation of the request, voiding of any guarantees, and no payment or refund. Violations will lead to suspension from the app and legal consequences.</p>",
+        "user_type": "student",
+        "question": "Are we allowed to contact tutors outside the App?",
+        "updated_at": {
+        "_seconds": 1729765811,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "13",
+        "created_at": {
+        "_seconds": 1755703571,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Once registered, you’ll see available tasks (projects, exams, homework, thesis). You can place a bid after making sure what the student need exactly&nbsp;</p>",
+        "user_type": "tutor",
+        "question": "How do I receive student requests?",
+        "updated_at": {
+        "_seconds": 1755703571,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "14",
+        "created_at": {
+        "_seconds": 1755703615,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Yes you can, but make sure to negotiate about the total price not your bid</p>",
+        "user_type": "tutor",
+        "question": "Can I negotiate with student about the price?",
+        "updated_at": {
+        "_seconds": 1755703615,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "15",
+        "created_at": {
+        "_seconds": 1755703631,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Once the student will complete the payment, you can start working on the request</p>",
+        "user_type": "tutor",
+        "question": "When should I start working on the request?",
+        "updated_at": {
+        "_seconds": 1755703631,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "16",
+        "created_at": {
+        "_seconds": 1755703651,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>You should mark the request as completed and wait the student the confirm on the completion.</p>",
+        "user_type": "tutor",
+        "question": "What should I do when I sent the task to the student?",
+        "updated_at": {
+        "_seconds": 1755703651,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "17",
+        "created_at": {
+        "_seconds": 1755703668,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Contacting students outside the app is strictly prohibited. Tutors are required to adhere to an NDA that forbids them from exchanging personal contact information. Any outside communication will result in immediate cancellation of the request, voiding of any guarantees, and no payment. Violations will lead to suspension from the app and legal consequences.</p>",
+        "user_type": "tutor",
+        "question": "Can I communicate with students outside the app?",
+        "updated_at": {
+        "_seconds": 1755703668,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "18",
+        "created_at": {
+        "_seconds": 1755703686,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Do not share personal info (email, phone, social media). All communication and files must stay inside OEG for safety and payment protection. If a student insists, ask them to upload details in the app or contact the customer support to provide you with an email or phone number.</p>",
+        "user_type": "tutor",
+        "question": "What if the student asked about personal details to send me more details about the request?",
+        "updated_at": {
+        "_seconds": 1755703686,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "19",
+        "created_at": {
+        "_seconds": 1755703705,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Students rate tutors after each task. Higher ratings improve your chances of winning bids.</p>",
+        "user_type": "tutor",
+        "question": "How does the rating system work?",
+        "updated_at": {
+        "_seconds": 1755703705,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "20",
+        "created_at": {
+        "_seconds": 1755703722,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Yes, the guarantee is the letter B and above or else the student will get a full refund from our end.</p>",
+        "user_type": "tutor",
+        "question": "Do tutors guarantee a specific grade?",
+        "updated_at": {
+        "_seconds": 1755703722,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "id": "21",
+        "created_at": {
+        "_seconds": 1755703737,
+        "_nanoseconds": 0
+        },
+        "title": null,
+        "answer": "<p>Once the student will get the grade from the university. If it is a B and above, the tutors will get paid; if not, the student will get a full refund.</p>",
+        "user_type": "tutor",
+        "question": "When the tutors will receive the payment?",
+        "updated_at": {
+        "_seconds": 1755703737,
+        "_nanoseconds": 0
+        }
+    }
+    ],
+    "socials": [
+    {
+        "link": "https://www.facebook.com/OUREASYGAME",
+        "created_at": {
+        "_seconds": 1686228487,
+        "_nanoseconds": 0
+        },
+        "title": "Facebook",
+        "image": "upload/168622848725787.png",
+        "id": "2",
+        "updated_at": {
+        "_seconds": 1686727180,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "link": "https://twitter.com/home",
+        "created_at": {
+        "_seconds": 1686238291,
+        "_nanoseconds": 0
+        },
+        "title": "Twitter",
+        "image": "upload/168623829112404.png",
+        "id": "3",
+        "updated_at": {
+        "_seconds": 1686238291,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "link": "https://www.instagram.com/oureasygame/",
+        "created_at": {
+        "_seconds": 1686238333,
+        "_nanoseconds": 0
+        },
+        "title": "Instagram",
+        "image": "upload/168623833349056.png",
+        "id": "4",
+        "updated_at": {
+        "_seconds": 1686238333,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "link": "https://www.linkedin.com/company/oureasygame",
+        "created_at": {
+        "_seconds": 1686238406,
+        "_nanoseconds": 0
+        },
+        "title": "Linkedin",
+        "image": "upload/16862384061727.png",
+        "id": "5",
+        "updated_at": {
+        "_seconds": 1686238406,
+        "_nanoseconds": 0
+        }
+    },
+    {
+        "link": "https://www.youtube.com/channel/UClkZSJtcCGsvk2o5v-2fVfQ",
+        "created_at": {
+        "_seconds": 1686238443,
+        "_nanoseconds": 0
+        },
+        "title": "Youtube",
+        "image": "upload/16862384431497.png",
+        "id": "6",
+        "updated_at": {
+        "_seconds": 1686238443,
+        "_nanoseconds": 0
+        }
+    }
+    ],
+    "sub_subjects": [
+    {
+        "label": "English",
+        "created_at": "2025-02-24 15:42:20",
+        "deleted_at": null,
+        "id": "4",
+        "subject_id": "202",
+        "updated_at": "2025-02-24 15:42:20"
+    },
+    {
+        "label": "Painting",
+        "created_at": "2025-02-24 16:13:28",
+        "deleted_at": null,
+        "id": "5",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:13:28"
+    },
+    {
+        "label": "Drawing",
+        "created_at": "2025-02-24 16:13:42",
+        "deleted_at": null,
+        "id": "6",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:13:42"
+    },
+    {
+        "label": "Photography",
+        "created_at": "2025-02-24 16:13:55",
+        "deleted_at": null,
+        "id": "7",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:13:55"
+    },
+    {
+        "label": "Digital Art",
+        "created_at": "2025-02-24 16:14:08",
+        "deleted_at": null,
+        "id": "8",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:14:08"
+    },
+    {
+        "label": "Dance",
+        "created_at": "2025-02-24 16:14:23",
+        "deleted_at": null,
+        "id": "9",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:14:23"
+    },
+    {
+        "label": "Theatre",
+        "created_at": "2025-02-24 16:14:32",
+        "deleted_at": null,
+        "id": "10",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:14:32"
+    },
+    {
+        "label": "Music",
+        "created_at": "2025-02-24 16:14:41",
+        "deleted_at": null,
+        "id": "11",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:14:41"
+    },
+    {
+        "label": "Renaissance Art",
+        "created_at": "2025-02-24 16:15:04",
+        "deleted_at": null,
+        "id": "12",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:04"
+    },
+    {
+        "label": "Modern Art",
+        "created_at": "2025-02-24 16:15:14",
+        "deleted_at": null,
+        "id": "13",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:14"
+    },
+    {
+        "label": "Ancient Art",
+        "created_at": "2025-02-24 16:15:24",
+        "deleted_at": null,
+        "id": "14",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:24"
+    },
+    {
+        "label": "Cinematography",
+        "created_at": "2025-02-24 16:15:34",
+        "deleted_at": null,
+        "id": "15",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:34"
+    },
+    {
+        "label": "Animation",
+        "created_at": "2025-02-24 16:15:43",
+        "deleted_at": null,
+        "id": "16",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:43"
+    },
+    {
+        "label": "Video Editing",
+        "created_at": "2025-02-24 16:15:52",
+        "deleted_at": null,
+        "id": "17",
+        "subject_id": "198",
+        "updated_at": "2025-02-24 16:15:52"
+    },
+    {
+        "label": "Architectural Design",
+        "created_at": "2025-02-24 16:18:23",
+        "deleted_at": null,
+        "id": "18",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:18:23"
+    },
+    {
+        "label": "Urban Design",
+        "created_at": "2025-02-24 16:19:51",
+        "deleted_at": null,
+        "id": "19",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:19:51"
+    },
+    {
+        "label": "Sustainable Design",
+        "created_at": "2025-02-24 16:20:07",
+        "deleted_at": null,
+        "id": "20",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:20:07"
+    },
+    {
+        "label": "Architectural History",
+        "created_at": "2025-02-24 16:20:29",
+        "deleted_at": null,
+        "id": "21",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:20:29"
+    },
+    {
+        "label": "Critical Theory",
+        "created_at": "2025-02-24 16:20:38",
+        "deleted_at": null,
+        "id": "22",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:20:38"
+    },
+    {
+        "label": "Cultural and Regional",
+        "created_at": "2025-02-24 16:20:51",
+        "deleted_at": null,
+        "id": "23",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:20:51"
+    },
+    {
+        "label": "Urbanism and Planning",
+        "created_at": "2025-02-24 16:21:24",
+        "deleted_at": null,
+        "id": "24",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:21:24"
+    },
+    {
+        "label": "Visualization",
+        "created_at": "2025-02-24 16:21:57",
+        "deleted_at": null,
+        "id": "25",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:21:57"
+    },
+    {
+        "label": "Ethics",
+        "created_at": "2025-02-24 16:22:11",
+        "deleted_at": null,
+        "id": "26",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:22:11"
+    },
+    {
+        "label": "Interior Architecture",
+        "created_at": "2025-02-24 16:22:25",
+        "deleted_at": null,
+        "id": "27",
+        "subject_id": "199",
+        "updated_at": "2025-02-24 16:22:25"
+    }
+    ],
+    "languages": [
+    {
+        "id": "1",
+        "updated_at": {
+        "_seconds": 1676660239,
+        "_nanoseconds": 0
+        },
+        "created_at": {
+        "_seconds": 1676660239,
+        "_nanoseconds": 0
+        },
+        "language_code": "en",
+        "language_name": "English"
+    },
+    {
+        "updated_at": {
+        "_seconds": 1676660239,
+        "_nanoseconds": 0
+        },
+        "id": "2",
+        "created_at": {
+        "_seconds": 1676660239,
+        "_nanoseconds": 0
+        },
+        "language_name": "Arabic",
+        "language_code": "ar"
+    },
+    {
+        "language_name": "French",
+        "language_code": "fr",
+        "created_at": {
+        "_seconds": 1676660245,
+        "_nanoseconds": 0
+        },
+        "updated_at": {
+        "_seconds": 1676660245,
+        "_nanoseconds": 0
+        },
+        "id": "3"
+    }
+    ],
+    "subjects": [
+    {
+        "icon": "0x4fbb",
+        "cancelled": "0",
+        "cms_attributes": null,
+        "version": "0",
+        "updated_at": "2023-05-16 21:44:05",
+        "locked": "0",
+        "label": "Arts",
+        "created_at": "2023-02-10 22:26:13",
+        "id": "198",
+        "deleted_at": null
+    },
+    {
+        "icon": "0x3f25",
+        "label": "Architecture",
+        "deleted_at": null,
+        "cancelled": "0",
+        "updated_at": "2023-02-10 22:26:13",
+        "created_at": "2023-02-10 22:26:13",
+        "id": "199",
+        "cms_attributes": null,
+        "version": "0",
+        "locked": "0"
+    },
+    {
+        "created_at": "2023-02-10 22:26:13",
+        "label": "Business",
+        "locked": "0",
+        "id": "200",
+        "icon": "0x40b9",
+        "updated_at": "2023-02-10 22:26:13",
+        "cancelled": "0",
+        "deleted_at": null,
+        "version": "0",
+        "cms_attributes": null
+    },
+    {
+        "deleted_at": null,
+        "icon": "0x4a73",
+        "created_at": "2023-02-10 22:26:13",
+        "locked": "0",
+        "cms_attributes": null,
+        "version": "0",
+        "label": "Computer Science",
+        "updated_at": "2023-02-10 22:26:13",
+        "cancelled": "0",
+        "id": "201"
+    },
+    {
+        "created_at": "2023-02-10 22:26:13",
+        "id": "202",
+        "label": "Education",
+        "cms_attributes": null,
+        "cancelled": "0",
+        "locked": "0",
+        "icon": "0x3e51",
+        "deleted_at": null,
+        "updated_at": "2023-02-10 22:26:13",
+        "version": "0"
+    },
+    {
+        "icon": "0x42a1",
+        "cancelled": "0",
+        "label": "Engineering",
+        "created_at": "2023-02-10 22:26:13",
+        "id": "203",
+        "deleted_at": null,
+        "cms_attributes": null,
+        "locked": "0",
+        "version": "0",
+        "updated_at": "2023-02-10 22:26:13"
+    },
+    {
+        "locked": "0",
+        "label": "English",
+        "cms_attributes": null,
+        "cancelled": "0",
+        "icon": "0x3f19",
+        "deleted_at": null,
+        "version": "0",
+        "id": "204",
+        "created_at": "2023-02-10 22:26:13",
+        "updated_at": "2023-02-10 22:26:13"
+    },
+    {
+        "icon": "0x5a7d",
+        "version": "0",
+        "cancelled": "0",
+        "id": "205",
+        "deleted_at": null,
+        "created_at": "2023-02-10 22:26:13",
+        "cms_attributes": null,
+        "locked": "0",
+        "label": "Humanities",
+        "updated_at": "2023-02-10 22:26:13"
+    },
+    {
+        "created_at": "2023-02-10 22:26:13",
+        "id": "206",
+        "cancelled": "0",
+        "icon": "0x49df",
+        "cms_attributes": null,
+        "updated_at": "2023-02-10 22:26:13",
+        "locked": "0",
+        "version": "0",
+        "label": "Law",
+        "deleted_at": null
+    },
+    {
+        "locked": "0",
+        "cms_attributes": null,
+        "id": "207",
+        "updated_at": "2023-02-10 22:26:13",
+        "version": "0",
+        "cancelled": "0",
+        "label": "Languages",
+        "icon": "0x3e4f",
+        "deleted_at": null,
+        "created_at": "2023-02-10 22:26:13"
+    },
+    {
+        "updated_at": "2023-02-10 22:26:13",
+        "deleted_at": null,
+        "icon": "0x52e3",
+        "cms_attributes": null,
+        "id": "208",
+        "cancelled": "0",
+        "version": "0",
+        "label": "Mathematics",
+        "locked": "0",
+        "created_at": "2023-02-10 22:26:13"
+    },
+    {
+        "locked": "0",
+        "cancelled": "0",
+        "cms_attributes": null,
+        "icon": "0x568d",
+        "version": "0",
+        "created_at": "2023-02-10 22:26:13",
+        "label": "Medicine",
+        "id": "209",
+        "updated_at": "2023-02-10 22:26:13",
+        "deleted_at": null
+    },
+    {
+        "cancelled": "0",
+        "locked": "0",
+        "label": "Pharmacy",
+        "cms_attributes": null,
+        "icon": "0x44e5",
+        "deleted_at": null,
+        "version": "0",
+        "created_at": "2023-02-10 22:26:13",
+        "updated_at": "2023-02-10 22:26:13",
+        "id": "211"
+    },
+    {
+        "created_at": "2023-02-10 22:26:13",
+        "icon": "0xe79E",
+        "deleted_at": "2024-12-20 16:28:36",
+        "version": "0",
+        "cms_attributes": null,
+        "label": "Science",
+        "updated_at": "2024-12-20 16:28:36",
+        "locked": "0",
+        "id": "212",
+        "cancelled": "0"
+    },
+    {
+        "cms_attributes": null,
+        "version": "0",
+        "deleted_at": null,
+        "locked": "0",
+        "updated_at": "2023-02-10 22:26:13",
+        "id": "213",
+        "created_at": "2023-02-10 22:26:13",
+        "icon": "0x4f89",
+        "label": "Social Sciences",
+        "cancelled": "0"
+    },
+    {
+        "id": "214",
+        "cms_attributes": null,
+        "created_at": "2023-02-10 22:26:13",
+        "deleted_at": null,
+        "cancelled": "0",
+        "updated_at": "2023-02-10 22:26:13",
+        "locked": "0",
+        "version": "0",
+        "icon": "0x4f9a",
+        "label": "Technologies"
+    },
+    {
+        "created_at": "2024-12-20 16:28:24",
+        "label": "Physics",
+        "icon": "0x3cbf",
+        "locked": "0",
+        "version": "0",
+        "cms_attributes": null,
+        "updated_at": "2024-12-20 16:28:24",
+        "cancelled": "0",
+        "deleted_at": null,
+        "id": "217"
+    }
+    ]
+}
