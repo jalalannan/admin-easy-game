@@ -17,8 +17,11 @@ function initializeFirebaseAdmin() {
     return apps[0];
   }
 
-  // In development with emulator, we don't need credentials
-  if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true') {
+  // Check if explicitly using emulator (must have both flag and emulator host)
+  const useEmulator = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' && 
+                      process.env.FIRESTORE_EMULATOR_HOST;
+  
+  if (useEmulator) {
     console.log('🔧 Initializing Firebase Admin for EMULATOR');
     
     return initializeApp({
@@ -28,6 +31,7 @@ function initializeFirebaseAdmin() {
 
   // In production, use service account credentials
   console.log('🔧 Initializing Firebase Admin for PRODUCTION');
+  console.log('Project ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
   
   // Check if we have service account credentials
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
@@ -52,12 +56,17 @@ const adminApp = initializeFirebaseAdmin();
 const db = getFirestore(adminApp);
 
 // Connect to Firestore emulator if in development (only once)
-if (!settingsApplied && (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true')) {
-  const firestoreHost = process.env.FIRESTORE_EMULATOR_HOST || 'localhost:8080';
+// Only connect if explicitly running with emulator AND emulator host is set
+if (
+  process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' && 
+  process.env.FIRESTORE_EMULATOR_HOST &&
+  !settingsApplied
+) {
+  const firestoreHost = process.env.FIRESTORE_EMULATOR_HOST;
   const [host, port] = firestoreHost.split(':');
   
   console.log(`📡 Connecting to Firestore Emulator at ${host}:${port}`);
-  
+  console.log('firestoreHost', firestoreHost);
   try {
     db.settings({
       host: firestoreHost,
@@ -68,6 +77,8 @@ if (!settingsApplied && (process.env.NODE_ENV === 'development' || process.env.N
     // Settings already applied, ignore
     console.log('⚠️  Firestore settings already configured');
   }
+} else {
+  console.log('🌐 Using production Firestore (not emulator)');
 }
 
 export const adminDb = db;

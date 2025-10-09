@@ -664,37 +664,39 @@ export default function TutorsPage() {
                       Education & Certifications
                     </h4>
                     <div className="space-y-3">
-                      {tutor.degree.map((degree, index) => (
-                        <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Badge variant="secondary" className="bg-purple-100 text-purple-700">
-                                  {degree}
-                                </Badge>
-                              </div>
-                              {tutor.university && tutor.university[index] && (
-                                <p className="text-sm font-medium text-gray-700 mt-1">
-                                  {tutor.university[index]}
-                                </p>
-                              )}
-                              {tutor.certification_file_link && tutor.certification_file_link[index] && (
-                                <div className="mt-2">
-                                  <a
-                                    href={getImageUrl(tutor.certification_file_link[index])}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                                  >
-                                    <FileText className="h-3 w-3" />
-                                    View Certificate
-                                  </a>
+                      {Array.isArray(tutor.degree) && tutor.degree.length > 0 ? (
+                        tutor.degree.map((degree, index) => (
+                          <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                                    {degree}
+                                  </Badge>
                                 </div>
-                              )}
+                                {Array.isArray(tutor.university) && tutor.university[index] && (
+                                  <p className="text-sm font-medium text-gray-700 mt-1">
+                                    {tutor.university[index]}
+                                  </p>
+                                )}
+                                {Array.isArray(tutor.certification_file_link) && tutor.certification_file_link[index] && (
+                                  <div className="mt-2">
+                                    <a
+                                      href={getImageUrl(tutor.certification_file_link[index])}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                                    >
+                                      <FileText className="h-3 w-3" />
+                                      View Certificate
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : null}
                     </div>
                   </div>
                 )}
