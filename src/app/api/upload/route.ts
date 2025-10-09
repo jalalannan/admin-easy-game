@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     await s3Client.send(command);
 
     // Build full CDN URL for preview
-    const cdnUrl = process.env.NEXT_PUBLIC_DO_CDN_URL || 
+    const cdnUrl = process.env.DO_CDN_URL || 
       `https://${process.env.DO_BUCKET || 'oureasygamestoreage'}.${process.env.DO_ENDPOINT || 'nyc3.digitaloceanspaces.com'}`;
     const fullUrl = `${cdnUrl}/${s3ObjectKey}`;
 

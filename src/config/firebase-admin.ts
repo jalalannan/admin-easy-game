@@ -18,11 +18,11 @@ function initializeFirebaseAdmin() {
   }
 
   // In development with emulator, we don't need credentials
-  if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true') {
+  if (process.env.NODE_ENV === 'development' || process.env.USE_FIREBASE_EMULATOR === 'true') {
     console.log('🔧 Initializing Firebase Admin for EMULATOR');
     
     return initializeApp({
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
+      projectId: process.env.FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
     });
   }
 
@@ -35,13 +35,13 @@ function initializeFirebaseAdmin() {
     
     return initializeApp({
       credential: cert(serviceAccount),
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
+      projectId: process.env.FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
     });
   }
   
   // Fallback: Initialize without credentials (will use Application Default Credentials)
   return initializeApp({
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
+    projectId: process.env.FIREBASE_PROJECT_ID || 'oureasygame-internal-testing',
   });
 }
 
@@ -52,7 +52,7 @@ const adminApp = initializeFirebaseAdmin();
 const db = getFirestore(adminApp);
 
 // Connect to Firestore emulator if in development (only once)
-if (!settingsApplied && (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true')) {
+if (!settingsApplied && (process.env.NODE_ENV === 'development' || process.env.USE_FIREBASE_EMULATOR === 'true')) {
   const firestoreHost = process.env.FIRESTORE_EMULATOR_HOST || 'localhost:8080';
   const [host, port] = firestoreHost.split(':');
   
