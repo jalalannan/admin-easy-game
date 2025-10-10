@@ -22,6 +22,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(studentData.email)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
     // Check if email already exists
     if (!studentData.email) {
       return NextResponse.json(

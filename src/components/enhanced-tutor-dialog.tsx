@@ -35,6 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "@/components/ui/image-upload";
 import { CountrySelectorEnhanced } from "@/components/ui/country-selector-enhanced";
 import { Switch } from "@/components/ui/switch";
+import TutorAccountSettingsSection from "./form-sections/tutor-account-settings-section";
 
 interface EnhancedTutorDialogProps {
   open: boolean;
@@ -58,7 +59,6 @@ export interface TutorFormData {
   whatsapp_phone?: string;
   whatsapp_country_code?: string;
   country?: string;
-  address?: string;
   profile_image?: string;
   platform?: string;
   // Enhanced fields for editing
@@ -96,7 +96,6 @@ export const EnhancedTutorDialog = React.memo(function EnhancedTutorDialog({
     whatsapp_phone: '',
     whatsapp_country_code: '+961',
     country: '',
-    address: '',
     profile_image: '',
     platform: 'web',
     // Enhanced fields
@@ -201,7 +200,6 @@ export const EnhancedTutorDialog = React.memo(function EnhancedTutorDialog({
         whatsapp_phone: tutor.whatsapp_phone || '',
         whatsapp_country_code: tutor.whatsapp_country_code || '+961',
         country: tutor.country || '',
-        address: tutor.address || '',
         profile_image: tutor.profile_image || '',
         platform: tutor.platform || 'web',
         verified: tutor.verified || '0',
@@ -222,7 +220,6 @@ export const EnhancedTutorDialog = React.memo(function EnhancedTutorDialog({
         whatsapp_phone: '',
         whatsapp_country_code: '+961',
         country: '',
-        address: '',
         profile_image: '',
         platform: 'web',
         verified: '0',
@@ -318,67 +315,16 @@ export const EnhancedTutorDialog = React.memo(function EnhancedTutorDialog({
                         {statusBadges}
                       </div>
                     </div>
-
-                    {/* Toggle Controls */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
-                      {/* Verification Toggle */}
-                      <div className="flex items-center justify-between space-x-2 p-3 rounded-lg border bg-gray-50">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4 text-green-600" />
-                          <div>
-                            <Label htmlFor="verified" className="text-sm font-medium cursor-pointer">
-                              Verified
-                            </Label>
-                            <p className="text-xs text-gray-500">Tutor is verified</p>
-                          </div>
-                        </div>
-                        <Switch
-                          id="verified"
-                          checked={formData.verified === '2'}
-                          onCheckedChange={(checked) => handleFieldChange('verified', checked ? '2' : '0')}
-                        />
-                      </div>
-
-                      {/* Notifications Toggle */}
-                      <div className="flex items-center justify-between space-x-2 p-3 rounded-lg border bg-gray-50">
-                        <div className="flex items-center gap-2">
-                          <Bell className="h-4 w-4 text-blue-600" />
-                          <div>
-                            <Label htmlFor="notifications" className="text-sm font-medium cursor-pointer">
-                              Notifications
-                            </Label>
-                            <p className="text-xs text-gray-500">Send notifications</p>
-                          </div>
-                        </div>
-                        <Switch
-                          id="notifications"
-                          checked={formData.send_notifications === '1'}
-                          onCheckedChange={(checked) => handleFieldChange('send_notifications', checked ? '1' : '0')}
-                        />
-                      </div>
-
-                      {/* Cancelled Toggle */}
-                      <div className="flex items-center justify-between space-x-2 p-3 rounded-lg border bg-gray-50">
-                        <div className="flex items-center gap-2">
-                          <Ban className="h-4 w-4 text-red-600" />
-                          <div>
-                            <Label htmlFor="cancelled" className="text-sm font-medium cursor-pointer">
-                              Cancelled
-                            </Label>
-                            <p className="text-xs text-gray-500">Account is cancelled</p>
-                          </div>
-                        </div>
-                        <Switch
-                          id="cancelled"
-                          checked={formData.cancelled === '1'}
-                          onCheckedChange={(checked) => handleFieldChange('cancelled', checked ? '1' : '0')}
-                        />
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
             )}
+
+            {/* Account Settings */}
+            <TutorAccountSettingsSection
+              formData={formData}
+              onFieldChange={handleFieldChange}
+            />
 
             {/* Basic Information */}
             <Card>
@@ -602,19 +548,6 @@ export const EnhancedTutorDialog = React.memo(function EnhancedTutorDialog({
                       label="Country"
                       placeholder="Select country"
                       showSearch={true}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="address" className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      Address
-                    </Label>
-                    <Input
-                      id="address"
-                      placeholder="Enter address"
-                      value={formData.address}
-                      onChange={(e) => handleFieldChange('address', e.target.value)}
                     />
                   </div>
                 </div>

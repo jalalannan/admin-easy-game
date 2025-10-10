@@ -13,7 +13,6 @@ export interface Tutor {
   email: string;
   country_id?: string | null;
   skills?: number[];
-  address?: string | null;
   profile_image?: string | null;
   subjects?: number[];
   experience_years?: number | null;

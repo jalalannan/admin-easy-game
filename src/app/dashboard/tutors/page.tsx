@@ -32,11 +32,15 @@ import {
   XCircle,
   Bell,
   BellOff,
-  Ban
+  Ban,
+  BookOpen,
+  Award,
+  Languages
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTutorManagementStore } from "@/stores/tutor-management-store";
 import { useFirebaseAuthStore } from "@/stores/firebase-auth-store";
+import { useResourcesManagementStore } from "@/stores/resources-management-store";
 import { Tutor, TutorFilters } from "@/types/tutor";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -76,9 +80,11 @@ export default function TutorsPage() {
   } = useTutorManagementStore();
 
   const { hasPermission } = useFirebaseAuthStore();
+  const { subjects, languages, fetchAllResources } = useResourcesManagementStore();
 
   useEffect(() => {
     fetchTutors();
+    fetchAllResources(); // Load subjects and languages for display
   }, []);
 
   // Extract unique filter options from tutors data
@@ -109,7 +115,7 @@ export default function TutorsPage() {
     };
     resetPagination();
     fetchTutors(searchFilters);
-  }, [searchTerm, filters]);
+  }, [searchTerm, filters, resetPagination, fetchTutors]);
 
   const handleCreateTutor = useCallback(async (tutorData: any) => {
     await createTutor(tutorData);
@@ -423,7 +429,7 @@ export default function TutorsPage() {
           </Alert>
         )}
 
-        {/* Tutors Grid */}
+        {/* Tutors Grid - Single Column with 4-Column Internal Layout */}
         <LoadingOverlay loading={loading}>
           <div className="grid gap-4">
             {tutors.map((tutor) => (
@@ -581,78 +587,199 @@ export default function TutorsPage() {
                 </CardHeader>
               
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                  {tutor.country && (
+                {/* Main Info Grid - 4 Columns */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                  {/* Column 1: Contact Info */}
+                  <div className="space-y-3">
                     <div>
-                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        Location
+                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                        <Mail className="h-3 w-3" />
+                        Email
                       </h4>
-                      <p className="text-sm font-medium">
-                        {tutor.city ? `${tutor.city}, ${tutor.country}` : tutor.country}
-                      </p>
+                      <p className="text-sm font-medium truncate">{tutor.email}</p>
                     </div>
-                  )}
-                  
-                  {tutor.address && (
-                    <div>
-                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        Address
-                      </h4>
-                      <p className="text-sm font-medium">{tutor.address}</p>
-                    </div>
-                  )}
-                  
-                  {tutor.whatsapp_phone && (
-                    <div>
-                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                        <MessageCircle className="h-3 w-3" />
-                        WhatsApp
-                      </h4>
-                      <p className="text-sm font-medium">
-                        {tutor.whatsapp_country_code}{tutor.whatsapp_phone}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                      <MessageSquare className="h-3 w-3" />
-                      Requests
-                    </h4>
-                    <p className="text-sm font-medium">{tutor.request_count || 0}</p>
+                    {tutor.phone && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <Phone className="h-3 w-3" />
+                          Phone
+                        </h4>
+                        <p className="text-sm font-medium">{tutor.phone_country_code}{tutor.phone}</p>
+                      </div>
+                    )}
+                    {tutor.whatsapp_phone && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <MessageCircle className="h-3 w-3" />
+                          WhatsApp
+                        </h4>
+                        <p className="text-sm font-medium">{tutor.whatsapp_country_code}{tutor.whatsapp_phone}</p>
+                      </div>
+                    )}
                   </div>
-                  
-                  {tutor.nationality && (
+
+                  {/* Column 2: Location Info */}
+                  <div className="space-y-3">
+                    {tutor.country && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <MapPin className="h-3 w-3" />
+                          Location
+                        </h4>
+                        <p className="text-sm font-medium">
+                          {tutor.city ? `${tutor.city}, ${tutor.country}` : tutor.country}
+                        </p>
+                      </div>
+                    )}
                     <div>
-                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        Nationality
+                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                        <MessageSquare className="h-3 w-3" />
+                        Requests
                       </h4>
-                      <p className="text-sm font-medium">{tutor.nationality}</p>
+                      <p className="text-sm font-medium">{tutor.request_count || 0}</p>
                     </div>
-                  )}
-                  
-                  {tutor.gender && (
-                    <div>
-                      <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1">
-                        <UserCircle className="h-3 w-3" />
-                        Gender
-                      </h4>
-                      <p className="text-sm font-medium">{tutor.gender}</p>
-                    </div>
-                  )}
+                  </div>
+
+                  {/* Column 3: Personal Info */}
+                  <div className="space-y-3">
+                    {tutor.nationality && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <User className="h-3 w-3" />
+                          Nationality
+                        </h4>
+                        <p className="text-sm font-medium">{tutor.nationality}</p>
+                      </div>
+                    )}
+                    {tutor.gender && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <UserCircle className="h-3 w-3" />
+                          Gender
+                        </h4>
+                        <p className="text-sm font-medium">{tutor.gender}</p>
+                      </div>
+                    )}
+                    {tutor.date_of_birth && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <Calendar className="h-3 w-3" />
+                          Date of Birth
+                        </h4>
+                        <p className="text-sm font-medium">
+                          {new Date(tutor.date_of_birth).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Column 4: Academic & Experience */}
+                  <div className="space-y-3">
+                    {tutor.experience_years !== null && tutor.experience_years !== undefined && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <Award className="h-3 w-3" />
+                          Experience
+                        </h4>
+                        <p className="text-sm font-medium">{tutor.experience_years} years</p>
+                      </div>
+                    )}
+                    {tutor.major && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <BookOpen className="h-3 w-3" />
+                          Major
+                        </h4>
+                        <p className="text-sm font-medium">
+                          {(() => {
+                            const subject = subjects.find(s => s.id === tutor.major!.toString());
+                            return subject?.label || `Major ID: ${tutor.major}`;
+                          })()}
+                        </p>
+                      </div>
+                    )}
+                    {tutor.languages && tutor.languages.length > 0 && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-1">
+                          <Languages className="h-3 w-3" />
+                          Languages
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {tutor.languages.map((langId) => {
+                            const language = languages.find(l => l.id === langId.toString());
+                            return (
+                              <Badge key={langId} variant="secondary" className="text-xs bg-indigo-100 text-indigo-800">
+                                {language?.language_name || `Lang ${langId}`}
+                              </Badge>
+                            );
+                          })}
+                          
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Bio Section - Full Width */}
+                {/* Skills & Subjects Section - Compact */}
+                {(tutor.skills?.length || tutor.subjects?.length) && (
+                  <div className="mt-4 pt-4 border-t">
+                    <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-2">
+                      <BookOpen className="h-3 w-3" />
+                      Skills & Subjects
+                    </h4>
+                    <div className="space-y-2">
+                      {/* Skills */}
+                      {tutor.skills && tutor.skills.length > 0 && (
+                        <div>
+                          <h5 className="text-xs font-medium text-gray-500 mb-1">Skills</h5>
+                          <div className="flex flex-wrap gap-1">
+                            {tutor.skills.map((skillId) => {
+                              const subject = subjects.find(s => s.id === skillId.toString());
+                              return (
+                                <Badge key={skillId} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                                  {subject?.label || `Skill ${skillId}`}
+                                </Badge>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Subjects */}
+                      {tutor.subjects && tutor.subjects.length > 0 && (
+                        <div>
+                          <h5 className="text-xs font-medium text-gray-500 mb-1">Teaching Subjects</h5>
+                          <div className="flex flex-wrap gap-1">
+                            {tutor.subjects.map((subjectId) => {
+                              const subject = subjects.find(s => s.id === subjectId.toString());
+                              return (
+                                <Badge key={subjectId} variant="secondary" className="text-xs bg-green-100 text-green-800">
+                                  {subject?.label || `Subject ${subjectId}`}
+                                </Badge>
+                              );
+                            })}
+                            
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Bio Section - Compact */}
                 {tutor.bio && (
                   <div className="mt-4 pt-4 border-t">
                     <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-2">
                       <FileText className="h-3 w-3" />
                       Bio
                     </h4>
-                    <p className="text-sm text-gray-700">{tutor.bio}</p>
+                    <div className="text-sm text-gray-700 whitespace-pre-wrap bio-text max-w-full max-h-20 overflow-hidden">
+                      {tutor.bio.length > 150 ? `${tutor.bio}` : tutor.bio}
+                    </div>
                   </div>
                 )}
 
@@ -697,6 +824,32 @@ export default function TutorsPage() {
                           </div>
                         ))
                       ) : null}
+                    </div>
+                  </div>
+                )}
+
+                {Array.isArray(tutor.id_file_link) && tutor.id_file_link.length > 0 && (
+                  <div className="mt-4 pt-4 border-t">
+                    <h4 className="font-medium text-sm text-gray-600 flex items-center gap-1 mb-3">
+                      <FileText className="h-3 w-3" />
+                      ID Documents
+                    </h4>
+                    <div className="space-y-3">
+                      {tutor.id_file_link.map((link, idx) => (
+                        <div key={idx} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={getImageUrl(link)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              <FileText className="h-3 w-3" />
+                              {`ID File ${idx + 1}`}
+                            </a>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

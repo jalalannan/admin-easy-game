@@ -31,6 +31,14 @@ export async function POST(request: NextRequest) {
 
     // Check if email already exists
     if (tutorData.email) {
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(tutorData.email)) {
+            return NextResponse.json(
+                { success: false, error: 'Invalid email format' },
+                { status: 400 }
+            );
+        }
         const emailQuery = await adminDb
             .collection('tutors')
             .where('email', '==', tutorData.email)

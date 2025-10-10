@@ -132,6 +132,12 @@ const initializeDefaultPermissions = async () => {
       { name: 'Write Notifications', resource: 'notifications', action: 'write', description: 'Create and update notifications' },
       { name: 'Delete Notifications', resource: 'notifications', action: 'delete', description: 'Delete notifications' },
       { name: 'Manage Notifications', resource: 'notifications', action: 'manage', description: 'Full notification management' },
+
+      // Promo code management permissions
+      { name: 'Read Promo Codes', resource: 'promo_codes', action: 'read', description: 'View promo codes' },
+      { name: 'Write Promo Codes', resource: 'promo_codes', action: 'write', description: 'Create and update promo codes' },
+      { name: 'Delete Promo Codes', resource: 'promo_codes', action: 'delete', description: 'Delete promo codes' },
+      { name: 'Manage Promo Codes', resource: 'promo_codes', action: 'manage', description: 'Full promo code management' },
     ];
 
     for (const permission of defaultPermissions) {

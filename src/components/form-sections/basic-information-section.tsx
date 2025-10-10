@@ -78,8 +78,7 @@ export default function BasicInformationSection({
               value={formData.email}
               onChange={(e) => onFieldChange('email', e.target.value)}
               placeholder="student@example.com"
-              disabled={mode === 'edit'}
-              className={`${mode === 'edit' ? 'bg-gray-50' : ''} ${emailError ? 'border-red-500' : ''}`}
+              className={` ${emailError ? 'border-red-500' : ''}`}
             />
             {isValidatingEmail && (
               <p className="text-sm text-gray-500 mt-1">Checking email...</p>

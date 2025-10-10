@@ -45,6 +45,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<ResourceType>('faqs');
   const [searchTerm, setSearchTerm] = useState("");
+  const [faqUserTypeFilter, setFaqUserTypeFilter] = useState<'student' | 'tutor' | 'all'>('all');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -88,10 +89,14 @@ export default function ResourcesPage() {
   }, []);
 
   useEffect(() => {
-    const filters = { search: searchTerm || undefined };
+    let filters: any = { search: searchTerm || undefined };
     
     switch (activeTab) {
       case 'faqs':
+        // Add user type filter for FAQs
+        if (faqUserTypeFilter !== 'all') {
+          filters.user_type = faqUserTypeFilter;
+        }
         fetchFAQs(filters as FAQFilters);
         break;
       case 'languages':
@@ -107,7 +112,7 @@ export default function ResourcesPage() {
         fetchSubjects(filters as SubjectFilters);
         break;
     }
-  }, [searchTerm, activeTab]);
+  }, [searchTerm, activeTab, faqUserTypeFilter]);
 
   const handleCreate = async (data: any) => {
     try {
@@ -543,7 +548,7 @@ export default function ResourcesPage() {
           )}
         </div>
 
-        {/* Search */}
+        {/* Search and Filters */}
         <div className="flex items-center space-x-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -554,6 +559,25 @@ export default function ResourcesPage() {
               className="pl-10"
             />
           </div>
+          
+          {/* FAQ User Type Filter */}
+          {activeTab === 'faqs' && (
+            <div className="w-48">
+              <Select
+                value={faqUserTypeFilter}
+                onValueChange={(value) => setFaqUserTypeFilter(value as 'student' | 'tutor' | 'all')}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by user type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="student">Students</SelectItem>
+                  <SelectItem value="tutor">Tutors</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         {/* Error Alert */}

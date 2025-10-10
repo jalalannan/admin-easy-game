@@ -84,7 +84,7 @@ export default function RolesManagement() {
     setFormData({
       name: role.name,
       description: role.description,
-      permissions: role.permissions.map((p: any) => p.id)
+      permissions: role.permissions // permissions are already string IDs
     });
     setIsEditDialogOpen(true);
   };
@@ -237,11 +237,14 @@ export default function RolesManagement() {
                 <div>
                   <h4 className="font-medium mb-2">Permissions:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {role.permissions.map((permission: any) => (
-                      <Badge key={permission.id} variant="secondary">
-                        {permission.resource}:{permission.action}
-                      </Badge>
-                    ))}
+                    {role.permissions.map((permissionId: string) => {
+                      const permission = permissions.find(p => p.id === permissionId);
+                      return permission ? (
+                        <Badge key={permissionId} variant="secondary">
+                          {permission.resource}:{permission.action}
+                        </Badge>
+                      ) : null;
+                    })}
                   </div>
                 </div>
                 

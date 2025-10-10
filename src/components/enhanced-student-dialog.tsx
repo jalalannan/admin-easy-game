@@ -20,7 +20,7 @@ import { useResourcesManagementStore } from "@/stores/resources-management-store
 const BasicInformationSection = lazy(() => import('./form-sections/basic-information-section'));
 const LocationInformationSection = lazy(() => import('./form-sections/location-information-section'));
 const AcademicInformationSection = lazy(() => import('./form-sections/academic-information-section'));
-const AccountSettingsSection = lazy(() => import('./form-sections/account-settings-section'));
+const StudentAccountSettingsSection = lazy(() => import('./form-sections/student-account-settings-section'));
 
 interface EnhancedStudentDialogProps {
   open: boolean;
@@ -394,7 +394,7 @@ export const EnhancedStudentDialog = React.memo(function EnhancedStudentDialog({
                 </FormSectionWrapper>
 
                 <FormSectionWrapper>
-                  <AccountSettingsSection
+                  <StudentAccountSettingsSection
                     formData={formData}
                     onFieldChange={handleFieldChange}
                   />

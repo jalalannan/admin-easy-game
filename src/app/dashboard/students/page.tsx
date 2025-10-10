@@ -29,7 +29,9 @@ import {
   UserCircle,
   BookOpen,
   Globe,
-  Languages
+  Languages,
+  CheckCircle,
+  XCircle
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useStudentManagementStore } from "@/stores/student-management-store";
@@ -49,6 +51,7 @@ export default function StudentsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<StudentFilters>({});
   const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [filterOptions, setFilterOptions] = useState({
     studentLevels: new Set<string>(),
     majors: new Set<string>(),
@@ -66,6 +69,7 @@ export default function StudentsPage() {
     createStudent, 
     updateStudent, 
     deleteStudent,
+    toggleVerification,
     importStudents,
     resetPagination
   } = useStudentManagementStore();
@@ -150,6 +154,18 @@ export default function StudentsPage() {
       await deleteStudent(studentId);
     }
   }, [deleteStudent]);
+
+  const handleToggleVerification = async (studentId: string, currentStatus: string) => {
+    try {
+      setActionLoading(studentId + '_verify');
+      const newStatus = currentStatus === '1' ? false : true;
+      await toggleVerification(studentId, newStatus);
+    } catch (error) {
+      console.error('Failed to toggle verification:', error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const openCreateDialog = useCallback(() => {
     setDialogMode('create');
@@ -554,14 +570,40 @@ export default function StudentsPage() {
                     
                     <div className="flex gap-2">
                       {hasPermission('students', 'write') && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openEditDialog(student)}
-                          className="hover:bg-blue-50 hover:border-blue-200"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <>
+                          {/* Verification Toggle */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleToggleVerification(student.id, student.verified)}
+                            disabled={actionLoading === student.id + '_verify'}
+                            className={
+                              student.verified === '1'
+                                ? "hover:bg-green-50 hover:border-green-200 text-green-600 border-green-300"
+                                : "hover:bg-gray-50 hover:border-gray-200"
+                            }
+                            title={student.verified === '1' ? 'Unverify student' : 'Verify student'}
+                          >
+                            {actionLoading === student.id + '_verify' ? (
+                              <span className="h-4 w-4 animate-spin">⟳</span>
+                            ) : student.verified === '1' ? (
+                              <CheckCircle className="h-4 w-4" />
+                            ) : (
+                              <XCircle className="h-4 w-4" />
+                            )}
+                          </Button>
+
+                          {/* Edit Button */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(student)}
+                            className="hover:bg-blue-50 hover:border-blue-200"
+                            title="Edit student"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </>
                       )}
                       
                       {hasPermission('students', 'delete') && (
@@ -570,6 +612,7 @@ export default function StudentsPage() {
                           size="sm"
                           onClick={() => handleDeleteStudent(student.id)}
                           className="hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                          title="Delete student"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

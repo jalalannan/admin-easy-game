@@ -28,6 +28,14 @@ export async function POST(request: NextRequest) {
     // Check if email is being updated and if it already exists for another tutor
     // If email is being updated, check if it already exists for another tutor
     if (tutorData.email) {
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(tutorData.email)) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid email format' },
+          { status: 400 }
+        );
+      }
       // Get the current tutor document
       const currentDoc = await tutorRef.get();
       const currentData = currentDoc.exists ? currentDoc.data() : null;

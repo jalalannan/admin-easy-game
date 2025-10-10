@@ -20,7 +20,8 @@ import {
   GraduationCap,
   Database,
   UserCog,
-  Bell
+  Bell,
+  Ticket
 } from "lucide-react";
 import { useFirebaseAuthStore } from "@/stores/firebase-auth-store";
 
@@ -59,6 +60,12 @@ const getNavigationItems = (hasPermission: (resource: string, action: string) =>
     href: "/dashboard/resources", 
     icon: Database, 
     permission: { resource: 'resources', action: 'read' } 
+  },
+  { 
+    name: "Promo Codes", 
+    href: "/dashboard/promo-codes", 
+    icon: Ticket, 
+    permission: { resource: 'promo_codes', action: 'read' } 
   },
   { 
     name: "Analytics", 

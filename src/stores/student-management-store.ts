@@ -31,6 +31,7 @@ interface StudentManagementStore {
   createStudent: (studentData: CreateStudentData) => Promise<void>;
   updateStudent: (studentId: string, studentData: UpdateStudentData) => Promise<void>;
   deleteStudent: (studentId: string) => Promise<void>;
+  toggleVerification: (studentId: string, verified: boolean) => Promise<void>;
   getStudentById: (studentId: string) => Promise<Student | null>;
   importStudents: (students: Student[]) => Promise<void>;
   setLoading: (loading: boolean) => void;
@@ -399,6 +400,31 @@ export const useStudentManagementStore = create<StudentManagementStore>((set, ge
       console.error('Error deleting student:', error);
       set({ 
         error: error.message || 'Failed to delete student',
+        loading: false 
+      });
+      throw error;
+    }
+  },
+
+  toggleVerification: async (studentId, verified) => {
+    try {
+      console.log('Toggling student verification:', studentId, 'to:', verified);
+      set({ loading: true, error: null });
+      
+      const studentRef = doc(db, 'students', studentId);
+      await updateDoc(studentRef, {
+        verified: verified ? '1' : '0',
+        updated_at: serverTimestamp(),
+      });
+      
+      console.log('✅ Student verification toggled successfully:', studentId, 'to:', verified ? 'verified' : 'unverified');
+      
+      set({ loading: false });
+      get().fetchStudents();
+    } catch (error: any) {
+      console.error('Error toggling student verification:', error);
+      set({ 
+        error: error.message || 'Failed to toggle student verification',
         loading: false 
       });
       throw error;
