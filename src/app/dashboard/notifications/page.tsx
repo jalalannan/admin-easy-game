@@ -17,10 +17,13 @@ import {
   Calendar,
   User,
   MessageSquare,
-  Settings
+  Settings,
+  Shield
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNotificationStore } from "@/stores/notification-management-store";
+import { useFirebaseAuthStore } from "@/stores/firebase-auth-store";
+import { AuthGuard } from "@/components/auth-guard";
 import { 
   Notification, 
   NotificationFilters, 
@@ -59,6 +62,8 @@ export default function NotificationsPage() {
     setFilters: setStoreFilters,
     clearFilters,
   } = useNotificationStore();
+
+  const { hasPermission } = useFirebaseAuthStore();
 
   // Fetch notifications on component mount and when filters change
   useEffect(() => {
@@ -199,36 +204,38 @@ export default function NotificationsPage() {
 
   // Define actions for the data table
   const actions = [
-    {
+    ...(hasPermission('notifications', 'write') ? [{
       label: "Edit",
       icon: Edit,
       onClick: (notification: Notification) => handleEditClick(notification),
       variant: "outline" as const,
-    },
-    {
+    }] : []),
+    ...(hasPermission('notifications', 'delete') ? [{
       label: "Delete",
       icon: Trash2,
       onClick: (notification: Notification) => handleDeleteNotification(notification.id),
       variant: "outline" as const,
-    },
+    }] : []),
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Notifications</h1>
-          <p className="text-muted-foreground">
+    <AuthGuard requiredPermission={{ resource: 'notifications', action: 'read' }}>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Notifications</h1>
+            <p className="text-muted-foreground">
             Manage notification templates for students and tutors
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Notification
-            </Button>
-          </DialogTrigger>
+        {hasPermission('notifications', 'write') && (
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Notification
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Create New Notification</DialogTitle>
@@ -242,6 +249,7 @@ export default function NotificationsPage() {
             />
           </DialogContent>
         </Dialog>
+        )}
       </div>
 
       {/* Search and Filters */}
@@ -371,27 +379,30 @@ export default function NotificationsPage() {
       </Card>
 
       {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Edit Notification</DialogTitle>
-            <DialogDescription>
-              Update the notification template.
-            </DialogDescription>
-          </DialogHeader>
-          {selectedNotification && (
-            <NotificationForm
-              initialData={selectedNotification}
-              onSubmit={(data) => handleUpdateNotification(selectedNotification.id, data)}
-              onCancel={() => {
-                setIsEditDialogOpen(false);
-                setSelectedNotification(null);
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+      {hasPermission('notifications', 'write') && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Notification</DialogTitle>
+              <DialogDescription>
+                Update the notification template.
+              </DialogDescription>
+            </DialogHeader>
+            {selectedNotification && (
+              <NotificationForm
+                initialData={selectedNotification}
+                onSubmit={(data) => handleUpdateNotification(selectedNotification.id, data)}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  setSelectedNotification(null);
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
+      </div>
+    </AuthGuard>
   );
 }
 

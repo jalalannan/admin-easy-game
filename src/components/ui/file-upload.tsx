@@ -5,25 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, X, Image as ImageIcon, Loader2, ExternalLink } from "lucide-react";
+import { Upload, X, File, Loader2, ExternalLink, Download } from "lucide-react";
 import { getFullUrlFromStoragePath } from "@/lib/file-upload";
 import { fetchWithProgress } from "@/lib/api-progress";
 
-interface ImageUploadProps {
+interface FileUploadProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
   maxSizeMB?: number;
   disabled?: boolean;
+  acceptedTypes?: string[];
+  placeholder?: string;
 }
 
-export function ImageUpload({
+export function FileUpload({
   value,
   onChange,
-  label = "Image",
-  maxSizeMB = 5,
+  label = "File",
+  maxSizeMB = 10,
   disabled = false,
-}: ImageUploadProps) {
+  acceptedTypes = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.gif'],
+  placeholder = "https://example.com/file.pdf"
+}: FileUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,12 +36,8 @@ export function ImageUpload({
   // Update preview when value changes
   React.useEffect(() => {
     if (value) {
-      // If it's a base64 data URL, use it directly
-      if (value.startsWith('data:')) {
-        setPreviewUrl(value);
-      }
       // If it's a full URL, use it directly
-      else if (value.startsWith('http')) {
+      if (value.startsWith('http')) {
         setPreviewUrl(value);
       } 
       // Otherwise, convert storage path to full URL
@@ -49,17 +49,38 @@ export function ImageUpload({
     }
   }, [value]);
 
+  const getFileIcon = (filename: string) => {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'pdf':
+        return '📄';
+      case 'doc':
+      case 'docx':
+        return '📝';
+      case 'txt':
+        return '📃';
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+        return '🖼️';
+      default:
+        return '📎';
+    }
+  };
+
+  const getFileName = (path: string) => {
+    if (path.startsWith('http')) {
+      return path.split('/').pop() || 'File';
+    }
+    return path.split('/').pop() || 'File';
+  };
+
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     setError(null);
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError('Please select an image file (JPG, PNG, GIF, WebP)');
-      return;
-    }
 
     // Validate file size
     const fileSizeMB = file.size / (1024 * 1024);
@@ -89,10 +110,10 @@ export function ImageUpload({
       const result = await response.json();
 
       if (result.success) {
-        // Store DB path in database: /storage/uploads/image.jpg
+        // Store DB path in database: /storage/uploads/file.pdf
         onChange(result.storagePath);
         
-        // Set full CDN URL for preview: https://bucket.endpoint/test/storage/uploads/image.jpg
+        // Set full CDN URL for preview: https://bucket.endpoint/test/storage/uploads/file.pdf
         setPreviewUrl(result.url);
         
         console.log('✅ Upload successful:', {
@@ -106,14 +127,14 @@ export function ImageUpload({
       setUploading(false);
     } catch (err) {
       console.error('❌ Upload error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to upload image');
+      setError(err instanceof Error ? err.message : 'Failed to upload file');
       setUploading(false);
     }
   };
 
   const handleRemove = async () => {
     // If there's a file to delete from storage, delete it first
-    if (value && !value.startsWith('data:') && !value.startsWith('http')) {
+    if (value && !value.startsWith('http')) {
       try {
         const response = await fetchWithProgress('/api/delete-file', {
           method: 'POST',
@@ -146,31 +167,63 @@ export function ImageUpload({
     fileInputRef.current?.click();
   };
 
+  const handleDownload = () => {
+    if (previewUrl) {
+      window.open(previewUrl, '_blank');
+    }
+  };
+
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
       
       <div className="space-y-3">
-        {/* Preview */}
+        {/* File Preview */}
         {previewUrl && (
-          <div className="relative inline-block">
-            <div className="relative w-32 h-32 border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-full object-cover"
-              />
+          <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="text-2xl">
+              {getFileIcon(getFileName(value))}
             </div>
-            <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
-              onClick={handleRemove}
-              disabled={disabled || uploading}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {getFileName(value)}
+              </p>
+              <p className="text-xs text-gray-500">
+                {value.startsWith('http') ? 'External URL' : 'Uploaded file'}
+              </p>
+            </div>
+            <div className="flex gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={handleDownload}
+                title="Download/View file"
+                disabled={disabled || uploading}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => window.open(previewUrl, '_blank')}
+                title="Open in new tab"
+                disabled={disabled || uploading}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                onClick={handleRemove}
+                disabled={disabled || uploading}
+                title="Remove file"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         )}
 
@@ -181,7 +234,7 @@ export function ImageUpload({
               type="file"
               ref={fileInputRef}
               onChange={handleFileSelect}
-              accept="image/*"
+              accept={acceptedTypes.join(',')}
               className="hidden"
               disabled={disabled || uploading}
             />
@@ -200,31 +253,19 @@ export function ImageUpload({
               ) : (
                 <>
                   <Upload className="h-4 w-4" />
-                  Choose Image
+                  Choose File
                 </>
               )}
             </Button>
-            
-            {previewUrl && !previewUrl.startsWith('data:') && (
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => window.open(previewUrl, '_blank')}
-                title="View full image"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            )}
           </div>
 
           <div className="text-xs text-gray-500">
-            Or paste image URL:
+            Or paste file URL:
           </div>
           <Input
             type="url"
-            placeholder="https://example.com/image.jpg"
-            value={value && !value.startsWith('data:') ? value : ''}
+            placeholder={placeholder}
+            value={value && value.startsWith('http') ? value : ''}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled || uploading}
           />
@@ -239,10 +280,9 @@ export function ImageUpload({
 
         {/* Info */}
         <p className="text-xs text-gray-500">
-          Max file size: {maxSizeMB}MB. Supported formats: JPG, PNG, GIF, WebP
+          Max file size: {maxSizeMB}MB. Supported formats: {acceptedTypes.join(', ')}
         </p>
       </div>
     </div>
   );
 }
-

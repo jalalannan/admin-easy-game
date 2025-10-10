@@ -27,6 +27,7 @@ export interface Social {
   title: string;
   created_at: string;
   updated_at: string;
+  file?: string | null; // File path for uploaded social files
 }
 
 // Sub Subject Resource Type
@@ -91,12 +92,14 @@ export interface CreateSocialData {
   image: string;
   link: string;
   title: string;
+  file?: string;
 }
 
 export interface UpdateSocialData {
   image?: string;
   link?: string;
   title?: string;
+  file?: string;
 }
 
 export interface CreateSubSubjectData {

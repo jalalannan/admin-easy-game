@@ -19,7 +19,9 @@ import {
   GraduationCap,
   Calendar,
   ExternalLink,
-  User
+  User,
+  File,
+  Download
 } from "lucide-react";
 import { useResourcesManagementStore } from "@/stores/resources-management-store";
 import { useFirebaseAuthStore } from "@/stores/firebase-auth-store";
@@ -41,6 +43,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileUpload } from "@/components/ui/file-upload";
 
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<ResourceType>('faqs');
@@ -384,6 +387,85 @@ export default function ResourcesPage() {
           </div>
         </div>
       </CardHeader>
+      <CardContent>
+        {/* File Attachment */}
+        {social.file && (
+          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border">
+            <File className="h-4 w-4 text-gray-500" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {social.file.split('/').pop() || 'Attached file'}
+              </p>
+              <p className="text-xs text-gray-500">
+                {social.file.startsWith('http') ? 'External file' : 'Uploaded file'}
+              </p>
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const url = social.file?.startsWith('http') 
+                    ? social.file 
+                    : `https://oureasygamestoreage.nyc3.digitaloceanspaces.com/test${social.file}`;
+                  window.open(url, '_blank');
+                }}
+                className="h-8 px-2"
+              >
+                <Download className="h-3 w-3 mr-1" />
+                Download
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const url = social.file?.startsWith('http') 
+                    ? social.file 
+                    : `https://oureasygamestoreage.nyc3.digitaloceanspaces.com/test${social.file}`;
+                  window.open(url, '_blank');
+                }}
+                className="h-8 px-2"
+              >
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+              {hasPermission('resources', 'delete') && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    if (confirm('Are you sure you want to delete this file?')) {
+                      try {
+                        // Delete file from storage if it's not an external URL
+                        if (social.file && !social.file.startsWith('http')) {
+                          const response = await fetch('/api/delete-file', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ storagePath: social.file }),
+                          });
+
+                          if (!response.ok) {
+                            console.warn('Failed to delete file from storage');
+                          }
+                        }
+
+                        // Update the social to remove the file
+                        await updateSocial(social.id, { file: '' });
+                      } catch (error) {
+                        console.error('Error deleting file:', error);
+                      }
+                    }
+                  }}
+                  className="h-8 px-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 
@@ -865,6 +947,17 @@ function ResourceForm({ activeTab, selectedItem, onSubmit, loading, onCancel }: 
           onChange={(e) => setFormData({ ...formData, image: e.target.value })}
           placeholder="upload/image.png"
           required
+        />
+      </div>
+      
+      <div>
+        <FileUpload
+          value={formData.file || ''}
+          onChange={(value) => setFormData({ ...formData, file: value })}
+          label="Social File (Optional)"
+          maxSizeMB={10}
+          acceptedTypes={['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.gif', '.mp4', '.mp3']}
+          placeholder="https://example.com/social-document.pdf"
         />
       </div>
     </div>
