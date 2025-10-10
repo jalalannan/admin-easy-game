@@ -119,6 +119,9 @@ export function EnhancedUserDialog({
   const handleSave = useCallback(async () => {
     if (!isFormValid) return;
     
+    console.log('🔍 Form data being saved:', formData);
+    console.log('🔍 Password in formData:', formData.password);
+    
     try {
       await onSave(formData);
       onOpenChange(false);

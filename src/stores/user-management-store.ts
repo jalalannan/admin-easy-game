@@ -11,10 +11,6 @@ import {
   serverTimestamp,
   addDoc
 } from 'firebase/firestore';
-import { 
-  createUserWithEmailAndPassword,
-  updateProfile
-} from 'firebase/auth';
 import { db, auth } from '@/config/firebase';
 import { User, UserRole } from '@/types/auth';
 
@@ -86,9 +82,12 @@ export const useUserManagementStore = create<UserManagementStore>((set, get) => 
   fetchUsers: async () => {
     try {
       set({ loading: true, error: null });
-      // Get all users from Firebase Auth (this would typically be done server-side)
-      // For now, we'll get users from a custom collection
-      const usersSnapshot = await getDocs(collection(db, 'users'));
+      // Get all users from Firestore, excluding deleted users
+      const usersQuery = query(
+        collection(db, 'users'),
+        where('deleted_at', '==', null)
+      );
+      const usersSnapshot = await getDocs(usersQuery);
       const users: User[] = [];
       console.log("usersSnapshot: " + usersSnapshot);
       for (const userDoc of usersSnapshot.docs) {
@@ -133,38 +132,29 @@ export const useUserManagementStore = create<UserManagementStore>((set, get) => 
     try {
       set({ loading: true, error: null });
       
-      // Create user in Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        auth, 
-        userData.email, 
-        userData.password
-      );
+      console.log('🔍 Creating user with data:', userData);
+      console.log('🔍 Password in userData:', userData.password);
       
-      const firebaseUser = userCredential.user;
-      
-      // Update display name if provided
-      if (userData.displayName) {
-        await updateProfile(firebaseUser, {
-          displayName: userData.displayName
-        });
-      }
-      
-      // Store user data in Firestore
-      await setDoc(doc(db, 'users', firebaseUser.uid), {
-        email: userData.email,
-        displayName: userData.displayName || '',
-        photoURL: '',
-        emailVerified: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        customClaims: {},
+      // Call the user creation API
+      const response = await fetch('/api/users/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create user');
+      }
       
       // Assign roles if provided
       if (userData.roles && userData.roles.length > 0) {
         for (const roleId of userData.roles) {
           await addDoc(collection(db, 'userRoles'), {
-            userId: firebaseUser.uid,
+            userId: result.userId, // This is now the Firebase Auth UID
             roleId: roleId,
             assignedBy: auth.currentUser?.uid || 'system',
             assignedAt: serverTimestamp(),
@@ -189,12 +179,20 @@ export const useUserManagementStore = create<UserManagementStore>((set, get) => 
     try {
       set({ loading: true, error: null });
       
-      // Update user data in Firestore
-      const userRef = doc(db, 'users', userId);
-      await updateDoc(userRef, {
-        ...userData,
-        updatedAt: serverTimestamp(),
+      // Call the user update API
+      const response = await fetch('/api/users/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, ...userData }),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update user');
+      }
       
       // Update roles if provided
       if (userData.roles) {
@@ -241,22 +239,20 @@ export const useUserManagementStore = create<UserManagementStore>((set, get) => 
     try {
       set({ loading: true, error: null });
       
-      // Note: In a real app, you'd need admin privileges to delete users
-      // This is a simplified version that just removes from Firestore
-      
-      // Remove user roles
-      const userRolesQuery = query(
-        collection(db, 'userRoles'),
-        where('userId', '==', userId)
-      );
-      
-      const userRolesSnapshot = await getDocs(userRolesQuery);
-      for (const roleDoc of userRolesSnapshot.docs) {
-        await deleteDoc(roleDoc.ref);
+      // Call the user deletion API
+      const response = await fetch('/api/users/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete user');
       }
-      
-      // Remove user document
-      await deleteDoc(doc(db, 'users', userId));
       
       set({ loading: false });
       get().fetchUsers(); // Refresh users list
