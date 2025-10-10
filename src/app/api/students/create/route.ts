@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     const emailQuery = await adminDb
       .collection('students')
       .where('email', '==', studentData.email)
+      .where('deleted_at', '==', null)
       .limit(1)
       .get();
 
@@ -57,6 +58,7 @@ export async function POST(request: NextRequest) {
       const phoneQuery = await adminDb
         .collection('students')
         .where('phone_number', '==', studentData.phone_number)
+        .where('deleted_at', '==', null)
         .limit(1)
         .get();
 
@@ -86,13 +88,17 @@ export async function POST(request: NextRequest) {
       is_banned: '0',
       token: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
       test_user: '0',
+      deleted_at: null, // Ensure new students are not marked as deleted
       created_at: FieldValue.serverTimestamp(),
       updated_at: FieldValue.serverTimestamp(),
     };
 
-    // Remove undefined/null values
+    // Remove undefined/empty values but keep null values for deleted_at
     const cleanedStudent = Object.fromEntries(
-      Object.entries(newStudent).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+      Object.entries(newStudent).filter(([key, v]) => {
+        if (key === 'deleted_at') return true; // Always keep deleted_at field
+        return v !== undefined && v !== null && v !== '';
+      })
     );
 
     await studentRef.set(cleanedStudent);

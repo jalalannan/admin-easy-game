@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         const emailQuery = await adminDb
           .collection('students')
           .where('email', '==', studentData.email)
-          .where('cancelled', '==', '0')
+          .where('deleted_at', '==', null)
           .get();
 
         // If another student with this email exists (excluding this student)
@@ -71,11 +71,11 @@ export async function POST(request: NextRequest) {
         currentData = currentDoc.exists ? currentDoc.data() : null;
       }
       if (currentData && currentData.phone_number !== studentData.phone_number) {
-        // Query for any other student with the same phone number (not cancelled or current user)
+        // Query for any other student with the same phone number (not deleted or current user)
         const phoneQuery = await adminDb
           .collection('students')
           .where('phone_number', '==', studentData.phone_number)
-          .where('cancelled', '==', '0')
+          .where('deleted_at', '==', null)
           .get();
 
         const phoneExists = phoneQuery.docs.some(doc => doc.id !== studentId);
@@ -97,11 +97,11 @@ export async function POST(request: NextRequest) {
         currentData = currentDoc.exists ? currentDoc.data() : null;
       }
       if (currentData && currentData.whatsapp_number !== studentData.whatsapp_number) {
-        // Query for any other student with the same whatsapp number (not cancelled or current user)
+        // Query for any other student with the same whatsapp number (not deleted or current user)
         const waQuery = await adminDb
           .collection('students')
           .where('whatsapp_number', '==', studentData.whatsapp_number)
-          .where('cancelled', '==', '0')
+          .where('deleted_at', '==', null)
           .get();
 
         const waExists = waQuery.docs.some(doc => doc.id !== studentId);

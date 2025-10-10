@@ -12,7 +12,7 @@ export interface Student {
     phone_number?: string;
     created_at: string;
     updated_at: string;
-    deleted_at?: string;
+    deleted_at?: string | null;
     delete_reason?: string;
     locked: string;
     cancelled: string;

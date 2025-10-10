@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         const emailQuery = await adminDb
           .collection('tutors')
           .where('email', '==', tutorData.email)
+          .where('deleted_at', '==', null)
           .get();
 
         // If another tutor with this email exists (excluding this tutor)
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
         const phoneQuery = await adminDb
           .collection('tutors')
           .where('phone', '==', tutorData.phone)
+          .where('deleted_at', '==', null)
           .get();
 
         // If another tutor with this phone exists (excluding this tutor)
