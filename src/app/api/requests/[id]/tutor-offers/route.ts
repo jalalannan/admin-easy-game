@@ -3,10 +3,11 @@ import { adminDb } from '@/config/firebase-admin';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const requestId = params.id;
+    const { id } = await params;
+    const requestId = id;
     
     const snapshot = await adminDb
       .collection('requests')
