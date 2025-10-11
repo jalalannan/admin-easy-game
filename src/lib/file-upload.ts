@@ -186,6 +186,28 @@ export function getFullUrlFromStoragePath(storagePath: string): string {
 /**
  * Get image URL for display (handles base64, full URLs, and storage paths)
  */
+
+export function getStudentProfileImageUrl(student: { profile_image?: string; gender?: string }): string {
+  // If student has a profile image, use it
+  if (student.profile_image) {
+    // Handle different types of image paths
+    if (student.profile_image.startsWith('data:') || student.profile_image.startsWith('http')) {
+      return student.profile_image;
+    }
+    return getImageUrl(student.profile_image);
+  }
+  
+  // Fallback to default avatar based on gender
+  const gender = student.gender?.toUpperCase();
+  switch (gender) {
+    case 'FEMALE':
+      return '/assets/images/new/female_avatar.png';
+    case 'MALE':
+    case 'OTHER':
+    default:
+      return '/assets/images/new/male_avatar.png';
+  }
+}
 export function getImageUrl(imagePath: string): string {
   if (!imagePath) return '';
   

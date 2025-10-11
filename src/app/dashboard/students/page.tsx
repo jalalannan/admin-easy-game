@@ -38,6 +38,7 @@ import { useStudentManagementStore } from "@/stores/student-management-store";
 import { useFirebaseAuthStore } from "@/stores/firebase-auth-store";
 import { useResourcesManagementStore } from "@/stores/resources-management-store";
 import { Student, StudentFilters } from "@/types/student";
+import { getStudentProfileImageUrl } from "@/lib/file-upload";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -533,8 +534,24 @@ export default function StudentsPage() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xl">
-                          {getGenderIcon(student.gender)}
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <img 
+                            src={getStudentProfileImageUrl(student)} 
+                            alt={student.full_name || 'Student'} 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to gender icon if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallbackDiv = target.nextElementSibling as HTMLElement;
+                              if (fallbackDiv) {
+                                fallbackDiv.style.display = 'flex';
+                              }
+                            }}
+                          />
+                          <div className="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xl hidden">
+                            {getGenderIcon(student.gender)}
+                          </div>
                         </div>
                         <div className="flex-1">
                           <CardTitle className="flex items-center gap-2 mb-1">
