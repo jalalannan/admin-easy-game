@@ -9,10 +9,11 @@ import { adminDb } from '@/config/firebase-admin';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const tutorId = params.id;
+    const { id } = await params;
+    const tutorId = id;
 
     if (!tutorId) {
       return NextResponse.json(

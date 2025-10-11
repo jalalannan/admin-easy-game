@@ -9,10 +9,11 @@ import { adminDb } from '@/config/firebase-admin';
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const requestId = params.id;
+    const { id } = await params;
+    const requestId = id;
     const body = await request.json();
     const { tutor_paid } = body;
 

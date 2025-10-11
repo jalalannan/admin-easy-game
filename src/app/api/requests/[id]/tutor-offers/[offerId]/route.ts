@@ -3,11 +3,11 @@ import { adminDb } from '@/config/firebase-admin';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; offerId: string } }
+  { params }: { params: Promise<{ id: string; offerId: string }> }
 ) {
   try {
-    const requestId = params.id;
-    const offerId = params.offerId;
+    const { id, offerId } = await params;
+    const requestId = id;
     const body = await request.json();
     const { action, ...data } = body;
 
@@ -40,11 +40,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; offerId: string } }
+  { params }: { params: Promise<{ id: string; offerId: string }> }
 ) {
   try {
-    const requestId = params.id;
-    const offerId = params.offerId;
+    const { id, offerId } = await params;
+    const requestId = id;
     
     await adminDb
       .collection('requests')
