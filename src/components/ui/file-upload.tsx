@@ -137,7 +137,7 @@ export function FileUpload({
     if (value && !value.startsWith('http')) {
       try {
         const response = await fetchWithProgress('/api/delete-file', {
-          method: 'POST',
+          method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },

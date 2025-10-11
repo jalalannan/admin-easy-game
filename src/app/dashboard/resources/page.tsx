@@ -407,7 +407,7 @@ export default function ResourcesPage() {
                 onClick={() => {
                   const url = social.file?.startsWith('http') 
                     ? social.file 
-                    : `https://oureasygamestoreage.nyc3.digitaloceanspaces.com/test${social.file}`;
+                    : `${process.env.NEXT_PUBLIC_FILE_URL}${social.file}`;
                   window.open(url, '_blank');
                 }}
                 className="h-8 px-2"
@@ -438,7 +438,7 @@ export default function ResourcesPage() {
                         // Delete file from storage if it's not an external URL
                         if (social.file && !social.file.startsWith('http')) {
                           const response = await fetch('/api/delete-file', {
-                            method: 'POST',
+                            method: 'DELETE',
                             headers: {
                               'Content-Type': 'application/json',
                             },

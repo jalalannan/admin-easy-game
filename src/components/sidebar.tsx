@@ -50,6 +50,12 @@ const getNavigationItems = (hasPermission: (resource: string, action: string) =>
     permission: { resource: 'tutors', action: 'read' } 
   },
   { 
+    name: "Requests", 
+    href: "/dashboard/requests", 
+    icon: FileText, 
+    permission: { resource: 'tutors', action: 'read' } 
+  },
+  { 
     name: "Notifications", 
     href: "/dashboard/notifications", 
     icon: Bell, 

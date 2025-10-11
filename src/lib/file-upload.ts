@@ -129,7 +129,7 @@ export async function deleteFileFromDigitalOcean(storagePath: string): Promise<b
 
   try {
     const response = await fetchWithProgress('/api/delete-file', {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },

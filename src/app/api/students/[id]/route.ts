@@ -1,0 +1,54 @@
+export const runtime = 'nodejs';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { adminDb } from '@/config/firebase-admin';
+
+/**
+ * API Route for fetching a student by ID
+ * GET /api/students/[id]
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const studentId = params.id;
+
+    if (!studentId) {
+      return NextResponse.json(
+        { success: false, error: 'Student ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Fetch student by ID
+    const studentDoc = await adminDb.collection('students').doc(studentId).get();
+
+    if (!studentDoc.exists) {
+      return NextResponse.json(
+        { success: false, error: 'Student not found' },
+        { status: 404 }
+      );
+    }
+
+    const student = {
+      id: studentDoc.id,
+      ...studentDoc.data()
+    };
+
+    return NextResponse.json({
+      success: true,
+      student
+    });
+
+  } catch (error) {
+    console.error('❌ Student fetch error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Failed to fetch student' 
+      },
+      { status: 500 }
+    );
+  }
+}
