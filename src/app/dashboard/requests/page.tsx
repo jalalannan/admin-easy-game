@@ -170,16 +170,16 @@ function RequestCard({ request }: { request: Request }) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+    <Card className="hover:shadow-md transition-shadow cursor-pointer min-w-0">
       <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg line-clamp-2">{request.label}</CardTitle>
-          <div className="flex items-center gap-1">
+        <div className="flex justify-between items-start gap-2">
+          <CardTitle className="text-lg line-clamp-2 min-w-0 flex-1">{request.label}</CardTitle>
+          <div className="flex items-center gap-1 flex-shrink-0">
             <ChatButton request={request} />
             <RequestActions request={request} />
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Badge variant="outline" className="text-xs">
             {getRequestTypeLabel(request.assistance_type)}
           </Badge>
@@ -190,21 +190,21 @@ function RequestCard({ request }: { request: Request }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Subject:</span>
-            <span className="font-medium">{request.subject}</span>
+          <div className="flex justify-between text-sm gap-2">
+            <span className="text-muted-foreground flex-shrink-0">Subject:</span>
+            <span className="font-medium text-right truncate">{request.subject}</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Sub Subject:</span>
-            <span className="font-medium">{request.sub_subject}</span>
+          <div className="flex justify-between text-sm gap-2">
+            <span className="text-muted-foreground flex-shrink-0">Sub Subject:</span>
+            <span className="font-medium text-right truncate">{request.sub_subject}</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Language:</span>
-            <span className="font-medium">{request.language}</span>
+          <div className="flex justify-between text-sm gap-2">
+            <span className="text-muted-foreground flex-shrink-0">Language:</span>
+            <span className="font-medium text-right truncate">{request.language}</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Country:</span>
-            <span className="font-medium">{request.country}</span>
+          <div className="flex justify-between text-sm gap-2">
+            <span className="text-muted-foreground flex-shrink-0">Country:</span>
+            <span className="font-medium text-right truncate">{request.country}</span>
           </div>
         </div>
         
@@ -1339,10 +1339,12 @@ export default function RequestsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className={`grid ${getGridClass()} gap-4`}>
-            {requests.map((request) => (
-              <RequestCard key={request.id} request={request} />
-            ))}
+          <div className="w-full overflow-hidden">
+            <div className={`grid ${getGridClass()} gap-4 min-w-0`}>
+              {requests.map((request) => (
+                <RequestCard key={request.id} request={request} />
+              ))}
+            </div>
           </div>
         )}
       </div>

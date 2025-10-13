@@ -564,34 +564,36 @@ export function ChatDialog({
 
         {/* Chat Tabs */}
         {chats.length > 1 && (
-          <div className="flex gap-2 p-2 border-b">
-            {chats.map((chat) => (
-              <Button
-                key={chat.id}
-                variant={selectedChatId === chat.id ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleChatSelect(chat.id)}
-                className="flex items-center gap-2"
-                disabled={loadingUserInfo}
-              >
-                <User className="h-4 w-4" />
-                {loadingUserInfo && selectedChatId === chat.id ? (
-                  <>
-                    <LoadingSpinner size="sm" />
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    {chatUserInfo[chat.id]?.tutor?.nickname || `Tutor ${chat.tutor_id.slice(0, 8)}...`}
-                    {chat.unread_count_tutor > 0 && (
-                      <Badge variant="destructive" className="ml-1 text-xs">
-                        {chat.unread_count_tutor}
-                      </Badge>
-                    )}
-                  </>
-                )}
-              </Button>
-            ))}
+          <div className="border-b">
+            <div className="flex gap-2 p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              {chats.map((chat) => (
+                <Button
+                  key={chat.id}
+                  variant={selectedChatId === chat.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleChatSelect(chat.id)}
+                  className="flex items-center gap-2 whitespace-nowrap flex-shrink-0"
+                  disabled={loadingUserInfo}
+                >
+                  <User className="h-4 w-4" />
+                  {loadingUserInfo && selectedChatId === chat.id ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      {chatUserInfo[chat.id]?.tutor?.nickname || `Tutor ${chat.tutor_id.slice(0, 8)}...`}
+                      {chat.unread_count_tutor > 0 && (
+                        <Badge variant="destructive" className="ml-1 text-xs">
+                          {chat.unread_count_tutor}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Button>
+              ))}
+            </div>
           </div>
         )}
 
