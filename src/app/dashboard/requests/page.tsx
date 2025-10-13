@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { RequestFileManagement } from '@/components/ui/request-file-management';
+import { ChatDialog } from '@/components/chat-dialog';
 import { combineDateAndTime, formatDate as formatDateUtil, formatDateWithTimezone } from '@/lib/date-utils';
 import { 
   Plus, 
@@ -34,9 +35,95 @@ import {
   Grid3X3,
   Grid2X2,
   Columns3,
-  Columns4
+  Columns4,
+  MessageCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
+
+function ChatButton({ request }: { request: Request }) {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [studentInfo, setStudentInfo] = useState<{ email: string; nickname: string } | null>(null);
+  const [tutorInfo, setTutorInfo] = useState<{ email: string; nickname: string } | null>(null);
+  const [loadingInfo, setLoadingInfo] = useState(false);
+
+  // Fetch student and tutor info when chat opens
+  useEffect(() => {
+    if (isChatOpen && !studentInfo && !tutorInfo && !loadingInfo) {
+      setLoadingInfo(true);
+      
+      const fetchInfo = async () => {
+        try {
+          const promises = [];
+          
+          if (request.student_id) {
+            promises.push(
+              fetch(`/api/students/${request.student_id}`)
+                .then(res => res.json())
+                .then(data => data.success ? data.student : null)
+            );
+          } else {
+            promises.push(Promise.resolve(null));
+          }
+          
+          if (request.tutor_id) {
+            promises.push(
+              fetch(`/api/tutors/${request.tutor_id}`)
+                .then(res => res.json())
+                .then(data => data.success ? data.tutor : null)
+            );
+          } else {
+            promises.push(Promise.resolve(null));
+          }
+          
+          const [student, tutor] = await Promise.all(promises);
+          
+          if (student) {
+            setStudentInfo({
+              email: student.email || 'N/A',
+              nickname: student.nickname || 'N/A'
+            });
+          }
+          
+          if (tutor) {
+            setTutorInfo({
+              email: tutor.email || 'N/A',
+              nickname: tutor.nickname || 'N/A'
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        } finally {
+          setLoadingInfo(false);
+        }
+      };
+      
+      fetchInfo();
+    }
+  }, [isChatOpen, request.student_id, request.tutor_id, studentInfo, tutorInfo, loadingInfo]);
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setIsChatOpen(true)}
+        className="h-8 w-8 p-0"
+        title="Open chat"
+      >
+        <MessageCircle className="h-4 w-4" />
+      </Button>
+      
+      <ChatDialog
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        requestId={request.id}
+        requestTitle={request.label}
+        studentInfo={studentInfo || undefined}
+        tutorInfo={tutorInfo || undefined}
+      />
+    </>
+  );
+}
 
 function RequestCard({ request }: { request: Request }) {
   const formatDate = (value: any) => {
@@ -87,7 +174,10 @@ function RequestCard({ request }: { request: Request }) {
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg line-clamp-2">{request.label}</CardTitle>
-          <RequestActions request={request} />
+          <div className="flex items-center gap-1">
+            <ChatButton request={request} />
+            <RequestActions request={request} />
+          </div>
         </div>
         <div className="flex gap-2">
           <Badge variant="outline" className="text-xs">
