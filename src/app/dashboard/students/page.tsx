@@ -258,9 +258,9 @@ export default function StudentsPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Students</h1>
-            <p className="text-gray-600 mt-2">Manage student accounts and information</p>
-            <p className="text-sm text-gray-500 mt-1">Total: {totalCount} students</p>
+            <h1 className="text-3xl font-bold text-white">Students</h1>
+            <p className="text-gray-300 mt-2">Manage student accounts and information</p>
+            <p className="text-sm text-gray-400 mt-1">Total: {totalCount} students</p>
           </div>
           <div className="flex space-x-2">
             <Button 
@@ -334,9 +334,9 @@ export default function StudentsPage() {
           </div>
 
           {showFilters && (
-            <Card>
+            <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Filters</CardTitle>
+                <CardTitle className="text-lg text-white">Filters</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -529,12 +529,12 @@ export default function StudentsPage() {
         <LoadingOverlay loading={loading}>
           <div className="grid gap-4">
             {students.map((student) => (
-              <Card key={student.id} className="transition-all duration-200 hover:shadow-md">
+              <Card key={student.id} className="transition-all duration-200 hover:shadow-md bg-gray-800 border-gray-700">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-600 flex items-center justify-center">
                           <img 
                             src={getStudentProfileImageUrl(student)} 
                             alt={student.full_name || 'Student'} 
@@ -554,17 +554,17 @@ export default function StudentsPage() {
                           </div>
                         </div>
                         <div className="flex-1">
-                          <CardTitle className="flex items-center gap-2 mb-1">
+                          <CardTitle className="flex items-center gap-2 mb-1 text-white">
                             <GraduationCap className="h-5 w-5" />
                             {student.full_name || 'No Name'}
                           </CardTitle>
                           {student.nickname && student.nickname !== student.full_name && (
-                            <p className="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                            <p className="text-sm text-gray-300 mb-1 flex items-center gap-1">
                               <UserCircle className="h-3 w-3" />
                               @{student.nickname}
                             </p>
                           )}
-                          <CardDescription className="flex items-center gap-4 mt-1">
+                          <CardDescription className="flex items-center gap-4 mt-1 text-gray-300">
                             <span className="flex items-center gap-1">
                               <Mail className="h-4 w-4" />
                               {student.email}
@@ -776,12 +776,12 @@ export default function StudentsPage() {
         )}
 
         {students.length === 0 && !loading && (
-          <Card>
+          <Card className="bg-gray-800 border-gray-700">
             <CardContent className="p-6">
               <div className="text-center">
                 <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No students found</h3>
-                <p className="text-gray-500 mb-4">
+                <h3 className="text-lg font-medium text-white mb-2">No students found</h3>
+                <p className="text-gray-400 mb-4">
                   {searchTerm || Object.keys(filters).length > 0 
                     ? 'No students match your search criteria.' 
                     : 'Students will appear here once they are added to the system.'

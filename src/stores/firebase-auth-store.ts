@@ -133,6 +133,11 @@ const initializeDefaultPermissions = async () => {
       { name: 'Delete Notifications', resource: 'notifications', action: 'delete', description: 'Delete notifications' },
       { name: 'Manage Notifications', resource: 'notifications', action: 'manage', description: 'Full notification management' },
 
+      // Support management permissions
+      { name: 'Read Support', resource: 'support', action: 'read', description: 'View support conversations' },
+      { name: 'Write Support', resource: 'support', action: 'write', description: 'Send support messages' },
+      { name: 'Manage Support', resource: 'support', action: 'manage', description: 'Full support management' },
+
       // Promo code management permissions
       { name: 'Read Promo Codes', resource: 'promo_codes', action: 'read', description: 'View promo codes' },
       { name: 'Write Promo Codes', resource: 'promo_codes', action: 'write', description: 'Create and update promo codes' },

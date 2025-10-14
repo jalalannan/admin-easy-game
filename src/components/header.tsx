@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Bell } from 'lucide-react';
 import { NotificationsDialog } from '@/components/notifications-dialog';
 import { useRealtimeNotificationStore, useRealtimeNotifications } from '@/stores/realtime-notification-store';
+import Image from 'next/image';
 
 export function Header() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -16,13 +17,28 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 lg:left-64 z-40 bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-end">
+      <header 
+        className="fixed top-0 right-0 left-0 z-40 bg-gray-800 border-b border-gray-700 px-4 py-3 transition-all duration-300"
+        style={{ left: 'var(--sidebar-width, 16rem)' }}
+      >
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={80}
+              height={40}
+              className="h-8 w-auto"
+            />
+          </div>
+          
+          {/* Notifications */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsNotificationsOpen(true)}
-            className="relative"
+            className="relative text-white hover:bg-gray-700"
           >
             <Bell className="h-5 w-5" />
             {unseenCount > 0 && (
