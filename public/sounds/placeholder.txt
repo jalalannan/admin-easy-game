@@ -1,0 +1,22 @@
+# Placeholder for notification sound files
+
+This file serves as a placeholder to show the directory structure.
+
+## Required Files:
+- tutor-notification.mp3
+- student-notification.mp3  
+- admin-notification.mp3
+- default-notification.mp3
+
+## Instructions:
+1. Download MP3 files from free sound websites
+2. Rename them to match the required names above
+3. Place them in this directory
+4. Test using the sound settings in the admin panel
+
+## Free Sound Resources:
+- https://freesound.org/
+- https://www.zapsplat.com/
+- https://sound-effects.bbcrewind.co.uk/
+
+Search for: "notification bell", "soft chime", "gentle alert"

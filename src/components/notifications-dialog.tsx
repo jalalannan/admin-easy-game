@@ -15,11 +15,13 @@ import {
   Check,
   CheckCheck,
   FileText,
-  ExternalLink
+  ExternalLink,
+  Settings
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRealtimeNotificationStore } from '@/stores/realtime-notification-store';
 import { useRequestManagementStore } from '@/stores/request-management-store';
+import { SoundSettings } from '@/components/sound-settings';
 
 interface NotificationsDialogProps {
   isOpen: boolean;
@@ -41,6 +43,8 @@ export function NotificationsDialog({ isOpen, onClose }: NotificationsDialogProp
 
   const [requestData, setRequestData] = useState<Record<string, any>>({});
   const [loadingRequests, setLoadingRequests] = useState<Set<string>>(new Set());
+  const [isMarkingAllAsSeen, setIsMarkingAllAsSeen] = useState(false);
+  const [isSoundSettingsOpen, setIsSoundSettingsOpen] = useState(false);
 
   // Fetch request data using the request management store
   const fetchRequestData = async (requestId: string) => {
@@ -86,6 +90,17 @@ export function NotificationsDialog({ isOpen, onClose }: NotificationsDialogProp
     if (notification.requestId) {
       window.open(`/dashboard/requests/${notification.requestId}`, '_blank');
       onClose();
+    }
+  };
+
+  const handleMarkAllAsSeen = async () => {
+    setIsMarkingAllAsSeen(true);
+    try {
+      await markAllAsSeen();
+    } catch (error) {
+      console.error('Error marking all as seen:', error);
+    } finally {
+      setIsMarkingAllAsSeen(false);
     }
   };
 
@@ -145,13 +160,32 @@ export function NotificationsDialog({ isOpen, onClose }: NotificationsDialogProp
               <Button
                 variant="outline"
                 size="sm"
-                onClick={markAllAsSeen}
+                onClick={handleMarkAllAsSeen}
+                disabled={isMarkingAllAsSeen}
                 className="flex items-center gap-1"
               >
-                <CheckCheck className="h-4 w-4" />
-                Mark all as seen
+                {isMarkingAllAsSeen ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    Marking...
+                  </>
+                ) : (
+                  <>
+                    <CheckCheck className="h-4 w-4" />
+                    Mark all as seen
+                  </>
+                )}
               </Button>
             )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSoundSettingsOpen(true)}
+              className="flex items-center gap-1"
+            >
+              <Settings className="h-4 w-4" />
+              Sound
+            </Button>
           </div>
         </DialogHeader>
 
@@ -264,6 +298,12 @@ export function NotificationsDialog({ isOpen, onClose }: NotificationsDialogProp
           )}
         </div>
       </DialogContent>
+      
+      {/* Sound Settings Modal */}
+      <SoundSettings 
+        isOpen={isSoundSettingsOpen} 
+        onClose={() => setIsSoundSettingsOpen(false)} 
+      />
     </Dialog>
   );
 }
