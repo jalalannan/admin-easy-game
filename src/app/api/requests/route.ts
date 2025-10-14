@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       query = query.where('assistance_type', '==', filters.assistance_type);
     }
     if (filters.request_status) {
-      query = query.where('request_status', '==', filters.request_status);
+      query = query.where('request_status', '==', filters.request_status.toLowerCase());
     }
     if (filters.country) {
       query = query.where('country', '==', filters.country);
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
       promo_id: '0',
       rating: null,
       receipt_submitted: '0',
-      request_status: 'NEW',
+      request_status: 'new',
       saved_by: null,
       state: null,
       student_meeting_url: null,

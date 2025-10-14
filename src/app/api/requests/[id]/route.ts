@@ -47,6 +47,11 @@ export async function PUT(
       updated_at: new Date()
     };
 
+    // Normalize request_status to lowercase
+    if (body.request_status) {
+      updateData.request_status = body.request_status.toLowerCase();
+    }
+
     // Handle file arrays
     if (body.file_links) {
       updateData.file_links = JSON.stringify(body.file_links);

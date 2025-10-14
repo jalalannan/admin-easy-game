@@ -211,6 +211,8 @@ export function ChatDialog({
 
   // 🔹 Load messages (API fallback) with retry mechanism
   const loadMessages = useCallback(async (lastMessageId?: string, chatId?: string, isInitialLoad = false, attempt = 1) => {
+    let success = false;
+    
     try {
       if (lastMessageId) setLoadingMore(true);
       else setLoading(true);
@@ -229,6 +231,8 @@ export function ChatDialog({
       const data = await response.json();
 
       if (data.success) {
+        success = true;
+        
         if (lastMessageId) {
           // Load older messages - prepend to existing messages
           setMessages(prev => [...data.messages, ...prev]);
@@ -286,7 +290,8 @@ export function ChatDialog({
         }, 1000 * attempt);
       }
     } finally {
-      if (attempt >= maxRetries || !isInitialLoad) {
+      // Always clear loading states for successful responses or when retries are exhausted
+      if (success || attempt >= maxRetries || !isInitialLoad) {
         setLoading(false);
         setLoadingMore(false);
       }

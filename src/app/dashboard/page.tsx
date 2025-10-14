@@ -8,8 +8,98 @@ import {
   TrendingUp, 
   Activity,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Bell
 } from "lucide-react";
+
+// Test notification function
+const createTestNotification = async () => {
+  try {
+    const response = await fetch('/api/admin-notifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'message',
+        requestId: 'test-request-123',
+        chatId: 'test-chat-456',
+        senderType: 'student',
+        senderId: 'student-789',
+        senderName: 'John Doe',
+        senderNickname: 'Johnny',
+        message: 'Hello, I need help with my math homework!',
+        content: 'Johnny sent a message: "Hello, I need help with my math homework!"'
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Test notification created successfully');
+    } else {
+      console.error('Failed to create test notification');
+    }
+  } catch (error) {
+    console.error('Error creating test notification:', error);
+  }
+};
+
+// Create a test request first, then notification
+const createTestRequestAndNotification = async () => {
+  try {
+    // First create a test request
+    const requestResponse = await fetch('/api/requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        student_id: 'test-student-123',
+        subject: 'Mathematics',
+        sub_subject: 'Algebra',
+        assistance_type: 'HOMEWORK',
+        language: 'English',
+        country: 'United States',
+        description: 'Need help with quadratic equations',
+        budget: '50',
+        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+      }),
+    });
+
+    if (requestResponse.ok) {
+      const requestData = await requestResponse.json();
+      const requestId = requestData.request.id;
+      
+      // Then create notification with the real request ID
+      const notificationResponse = await fetch('/api/admin-notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'message',
+          requestId: requestId,
+          chatId: 'test-chat-456',
+          senderType: 'student',
+          senderId: 'student-789',
+          senderName: 'John Doe',
+          senderNickname: 'Johnny',
+          message: 'Hello, I need help with my math homework!',
+          content: 'Johnny sent a message: "Hello, I need help with my math homework!"'
+        }),
+      });
+
+      if (notificationResponse.ok) {
+        console.log('Test request and notification created successfully');
+      } else {
+        console.error('Failed to create test notification');
+      }
+    } else {
+      console.error('Failed to create test request');
+    }
+  } catch (error) {
+    console.error('Error creating test request and notification:', error);
+  }
+};
 
 const stats = [
   {
@@ -76,6 +166,26 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-600 mt-2">Welcome back! Here's what's happening today.</p>
+        
+        {/* Test Dialog Buttons */}
+        <div className="mt-4 flex gap-2 flex-wrap">
+          <Button 
+            onClick={createTestNotification}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Bell className="h-4 w-4" />
+            Test Notification
+          </Button>
+          <Button 
+            onClick={createTestRequestAndNotification}
+            variant="default"
+            className="flex items-center gap-2"
+          >
+            <Bell className="h-4 w-4" />
+            Test Request + Notification
+          </Button>
+        </div>
       </div>
 
       {/* Stats Grid */}

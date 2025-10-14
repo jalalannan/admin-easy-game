@@ -51,8 +51,9 @@ export async function POST(
 }
 
 async function changeRequestStatus(requestId: string, status: string, reason?: string) {
+  const normalizedStatus = status.toLowerCase();
   const updateData: any = {
-    request_status: status,
+    request_status: normalizedStatus,
     updated_at: new Date()
   };
   
@@ -61,13 +62,13 @@ async function changeRequestStatus(requestId: string, status: string, reason?: s
   }
   
   // Handle specific status changes
-  if (status === 'CANCELLED') {
+  if (normalizedStatus === 'cancelled') {
     updateData.cancelled = '1';
     updateData.cancel_reason = reason || 'Cancelled by admin';
-  } else if (status === 'COMPLETED') {
+  } else if (normalizedStatus === 'completed') {
     updateData.completed = '1';
     updateData.accepted = '1';
-  } else if (status === 'ONGOING') {
+  } else if (normalizedStatus === 'ongoing') {
     updateData.accepted = '1';
   }
   
@@ -79,7 +80,7 @@ async function assignTutor(requestId: string, tutorId: string, tutorPrice: strin
     tutor_id: tutorId,
     tutor_price: tutorPrice,
     tutor_accepted: '1',
-    request_status: 'ONGOING',
+    request_status: 'ongoing',
     updated_at: new Date()
   };
   
@@ -116,7 +117,7 @@ async function setStudentPrice(requestId: string, studentPrice: string) {
 
 async function cancelRequest(requestId: string, reason: string) {
   const updateData = {
-    request_status: 'CANCELLED',
+    request_status: 'cancelled',
     cancelled: '1',
     cancel_reason: reason,
     updated_at: new Date()
@@ -127,7 +128,7 @@ async function cancelRequest(requestId: string, reason: string) {
 
 async function completeRequest(requestId: string, feedback?: string) {
   const updateData: any = {
-    request_status: 'COMPLETED',
+    request_status: 'completed',
     completed: '1',
     accepted: '1',
     updated_at: new Date()

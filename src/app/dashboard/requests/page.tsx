@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useRequestManagementStore } from '@/stores/request-management-store';
 import { Request, RequestFilters, RequestStatus, RequestType } from '@/types/request';
 import { getRequestTypeLabel } from '@/types/request';
@@ -18,6 +19,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { RequestFileManagement } from '@/components/ui/request-file-management';
 import { ChatDialog } from '@/components/chat-dialog';
+import { RequestDetails } from '@/components/request-details';
+import { StatusManagement } from '@/components/status-management';
+import { AssignmentManagement } from '@/components/assignment-management';
+import { TutorOffersManagement } from '@/components/tutor-offers-management';
 import { combineDateAndTime, formatDate as formatDateUtil, formatDateWithTimezone } from '@/lib/date-utils';
 import { 
   Plus, 
@@ -36,7 +41,8 @@ import {
   Grid2X2,
   Columns3,
   Columns4,
-  MessageCircle
+  MessageCircle,
+  ExternalLink
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -90,9 +96,11 @@ function ChatButton({ request }: { request: Request }) {
               nickname: tutor.nickname || 'N/A'
             });
           }
+          setLoadingInfo(false);
         } catch (error) {
           console.error('Error fetching user info:', error);
         } finally {
+          console.log("access here")
           setLoadingInfo(false);
         }
       };
@@ -170,11 +178,31 @@ function RequestCard({ request }: { request: Request }) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow cursor-pointer min-w-0">
+    <Card 
+      id={`request-${request.id}`}
+      className="hover:shadow-md transition-shadow cursor-pointer min-w-0"
+    >
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start gap-2">
-          <CardTitle className="text-lg line-clamp-2 min-w-0 flex-1">{request.label}</CardTitle>
+          <CardTitle className="text-lg line-clamp-2 min-w-0 flex-1">
+            <a 
+              href={`/dashboard/requests/${request.id}`}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+              title="View request details"
+            >
+              {request.label}
+            </a>
+          </CardTitle>
           <div className="flex items-center gap-1 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => window.open(`/dashboard/requests/${request.id}`, '_blank')}
+              className="h-8 w-8 p-0"
+              title="Open in new tab"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
             <ChatButton request={request} />
             <RequestActions request={request} />
           </div>
@@ -301,7 +329,11 @@ function RequestActions({ request }: { request: Request }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          data-request-id={request.id}
+        >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -352,786 +384,24 @@ function RequestActions({ request }: { request: Request }) {
   );
 }
 
-function RequestDetails({ request }: { request: Request }) {
-  const [tutorInfo, setTutorInfo] = useState<{ email: string; nickname: string } | null>(null);
-  const [studentInfo, setStudentInfo] = useState<{ email: string; nickname: string } | null>(null);
-  const [loadingTutor, setLoadingTutor] = useState(false);
-  const [loadingStudent, setLoadingStudent] = useState(false);
 
-  const formatDate = (value: any) => {
-    if (!value) return 'Not set';
-    
-    try {
-      let date: Date;
-      if (value.toDate && typeof value.toDate === 'function') {
-        date = value.toDate();
-      } else if (typeof value === 'string' || typeof value === 'number') {
-        date = new Date(value);
-      } else {
-        return 'Invalid date';
-      }
-      
-      if (isNaN(date.getTime())) {
-        return 'Invalid date';
-      }
-      
-      return format(date, 'MMM dd, yyyy HH:mm');
-    } catch (error) {
-      console.error('Error formatting date:', error, value);
-      return 'Invalid date';
-    }
-  };
 
-  const formatDeadline = (request: Request) => {
-    try {
-      // If we have both date and time, combine them
-      if (request.date && request.deadline) {
-        const combinedDate = combineDateAndTime(request.date, request.deadline);
-        // Use timezone if available, otherwise use local formatting
-        if (request.timezone) {
-          return formatDateWithTimezone(combinedDate, 'MMM dd, yyyy HH:mm', request.timezone);
-        }
-        return format(combinedDate, 'MMM dd, yyyy HH:mm');
-      }
-      
-      return 'Not set';
-    } catch (error) {
-      console.error('Error formatting deadline:', error);
-      return 'Invalid date';
-    }
-  };
-
-  const { updateRequestFiles, loading, updateTutorPaid } = useRequestManagementStore();
-
-  // Parse file arrays from JSON strings
-  const fileLinks = request.file_links ? 
-    (typeof request.file_links === 'string' ? JSON.parse(request.file_links) : request.file_links) : [];
-  const fileNames = request.file_names ? 
-    (typeof request.file_names === 'string' ? JSON.parse(request.file_names) : request.file_names) : [];
-
-  const handleFileUpdate = async (newFileLinks: string[], newFileNames: string[]) => {
-    try {
-      await updateRequestFiles(request.id, newFileLinks, newFileNames);
-    } catch (error) {
-      console.error('Error updating files:', error);
-    }
-  };
-
-  const handleTutorPaymentToggle = async () => {
-    try {
-      const newStatus = request.tutor_paid === '1' ? '0' : '1';
-      await updateTutorPaid(request.id, newStatus);
-    } catch (error) {
-      console.error('Error updating tutor payment status:', error);
-    }
-  };
-
-  // Fetch tutor information
-  useEffect(() => {
-    if (request.tutor_id) {
-      setLoadingTutor(true);
-      fetch(`/api/tutors/${request.tutor_id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setTutorInfo({
-              email: data.tutor.email || 'N/A',
-              nickname: data.tutor.nickname || 'N/A'
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching tutor:', error);
-        })
-        .finally(() => {
-          setLoadingTutor(false);
-        });
-    }
-  }, [request.tutor_id]);
-
-  // Fetch student information
-  useEffect(() => {
-    if (request.student_id) {
-      setLoadingStudent(true);
-      fetch(`/api/students/${request.student_id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setStudentInfo({
-              email: data.student.email || 'N/A',
-              nickname: data.student.nickname || 'N/A'
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching student:', error);
-        })
-        .finally(() => {
-          setLoadingStudent(false);
-        });
-    }
-  }, [request.student_id]);
-
-  return (
-    <div className="space-y-6">
-      {/* Basic Information */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Title</Label>
-          <div className="p-2 bg-gray-50 rounded">{request.label}</div>
-        </div>
-        <div className="space-y-2">
-          <Label>Type</Label>
-          <div className="p-2 bg-gray-50 rounded">{getRequestTypeLabel(request.assistance_type)}</div>
-        </div>
-        <div className="space-y-2">
-          <Label>Subject</Label>
-          <div className="p-2 bg-gray-50 rounded">{request.subject}</div>
-        </div>
-        <div className="space-y-2">
-          <Label>Language</Label>
-          <div className="p-2 bg-gray-50 rounded">{request.language}</div>
-        </div>
-        <div className="space-y-2">
-          <Label>Country</Label>
-          <div className="p-2 bg-gray-50 rounded">{request.country}</div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Student</Label>
-          <div className="p-2 bg-gray-50 rounded">
-            {loadingStudent ? (
-              <div className="flex items-center gap-2">
-                <LoadingSpinner size="sm" />
-                <span>Loading...</span>
-              </div>
-            ) : studentInfo ? (
-              <div>
-                <div className="font-medium">{studentInfo.nickname}</div>
-                <div className="text-sm text-gray-500">{studentInfo.email}</div>
-              </div>
-            ) : (
-              'Not assigned'
-            )}
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label>Tutor</Label>
-          <div className="p-2 bg-gray-50 rounded">
-            {loadingTutor ? (
-              <div className="flex items-center gap-2">
-                <LoadingSpinner size="sm" />
-                <span>Loading...</span>
-              </div>
-            ) : tutorInfo ? (
-              <div>
-                <div className="font-medium">{tutorInfo.nickname}</div>
-                <div className="text-sm text-gray-500">{tutorInfo.email}</div>
-              </div>
-            ) : (
-              'Not assigned'
-            )}
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label>Created At</Label>
-          <div className="p-2 bg-gray-50 rounded">{formatDate(request.created_at)}</div>
-        </div>
-        <div className="space-y-2">
-          <Label>Deadline</Label>
-          <div className="p-2 bg-gray-50 rounded">
-            {request.timezone ? (
-              <>
-                <div>
-                  <span className="font-medium">Requester Timezone ({request.timezone}):</span>{' '}
-                  {formatDeadline(request)}
-                </div>
-                <div>
-                  <span className="font-medium">Your Local Time:</span>{' '}
-                  {(() => {
-                    try {
-                      if (request.date && request.deadline) {
-                        const combined = combineDateAndTime(request.date, request.deadline);
-                        return format(combined, 'MMM dd, yyyy HH:mm');
-                      }
-                      return 'Not set';
-                    } catch {
-                      return 'Invalid date';
-                    }
-                  })()}
-                </div>
-              </>
-            ) : (
-              <>{formatDeadline(request)}</>
-            )}
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label>Updated At</Label>
-          <div className="p-2 bg-gray-50 rounded">{formatDate(request.updated_at)}</div>
-        </div>
-      </div>
-
-      {/* Payment Status */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Payment Status</Label>
-          <Button
-            onClick={handleTutorPaymentToggle}
-            disabled={loading}
-            variant={request.tutor_paid === '1' ? 'destructive' : 'default'}
-            size="sm"
-            className="text-xs"
-          >
-            {loading ? (
-              <LoadingSpinner size="sm" />
-            ) : request.tutor_paid === '1' ? (
-              'Mark as Unpaid'
-            ) : (
-              'Mark as Paid'
-            )}
-          </Button>
-        </div>
-        <div className={`p-4 rounded-lg border ${
-          request.tutor_paid === '1' 
-            ? 'bg-green-50 border-green-200' 
-            : 'bg-orange-50 border-orange-200'
-        }`}>
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${
-              request.tutor_paid === '1' 
-                ? 'bg-green-500' 
-                : 'bg-orange-500'
-            }`}></div>
-            <span className={`font-medium ${
-              request.tutor_paid === '1' 
-                ? 'text-green-900' 
-                : 'text-orange-900'
-            }`}>
-              {request.tutor_paid === '1'  ? '💰 Tutor Payment Received' : '⏳ Payment Pending'}
-            </span>
-          </div>
-          <div className={`text-sm mt-1 ${
-            request.tutor_paid === '1' 
-              ? 'text-green-700' 
-              : 'text-orange-700'
-          }`}>
-            {request.tutor_paid === '1' 
-              ? 'The tutor has completed payment for this request' 
-              : 'Waiting for tutor payment to be processed'}
-          </div>
-        </div>
-      </div>
-
-      {/* Description */}
-      <div className="space-y-2">
-        <Label>Description</Label>
-        <div className="p-2 bg-gray-50 rounded min-h-[100px]">
-          {request.description || 'No description'}
-        </div>
-      </div>
-
-      {/* File Management */}
-      <RequestFileManagement
-        fileLinks={fileLinks}
-        fileNames={fileNames}
-        onUpdate={handleFileUpdate}
-        label="Request Files"
-        disabled={loading}
-      />
-    </div>
-  );
-}
-
-function StatusManagement({ 
-  request, 
-  onStatusChange, 
-  loading 
-}: { 
-  request: Request; 
-  onStatusChange: (status: string, reason?: string) => void;
-  loading: boolean;
-}) {
-  const [reason, setReason] = useState('');
-
-  const statusOptions = [
-    { value: 'NEW', label: 'New' },
-    { value: 'PENDING', label: 'Pending' },
-    { value: 'PENDING_PAYMENT', label: 'Pending Payment' },
-    { value: 'ONGOING', label: 'Ongoing' },
-    { value: 'TUTOR_COMPLETED', label: 'Tutor Completed' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'CANCELLED', label: 'Cancelled' },
-  ];
-
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label>Current Status</Label>
-        <Badge className={getRequestStatusColor(request.request_status)}>
-          {getRequestStatusLabel(request.request_status)}
-        </Badge>
-      </div>
-      
-      <div className="space-y-2">
-        <Label>Change Status</Label>
-        <div className="grid grid-cols-2 gap-2">
-          {statusOptions.map((status) => (
-            <Button
-              key={status.value}
-              variant={request.request_status === status.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => onStatusChange(status.value)}
-              disabled={loading}
-            >
-              {status.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-      
-      <div className="space-y-2">
-        <Label>Reason (for cancellation)</Label>
-        <Textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="Enter reason for status change..."
-        />
-      </div>
-    </div>
-  );
-}
-
-function TutorSearchComponent({ 
-  onSelectTutor, 
-  selectedTutorId,
-  currentTutorId 
-}: { 
-  onSelectTutor: (tutor: Tutor) => void;
-  selectedTutorId?: string;
-  currentTutorId?: string;
-}) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<Tutor[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showResults, setShowResults] = useState(false);
-  const [currentTutor, setCurrentTutor] = useState<Tutor | null>(null);
-  const [loadingCurrentTutor, setLoadingCurrentTutor] = useState(false);
-
-  // Fetch currently assigned tutor
-  useEffect(() => {
-    const fetchCurrentTutor = async () => {
-      if (!currentTutorId) {
-        setCurrentTutor(null);
-        return;
-      }
-
-      setLoadingCurrentTutor(true);
-      try {
-        const response = await fetch(`/api/tutors/${currentTutorId}`);
-        const data = await response.json();
-        
-        if (data.success) {
-          setCurrentTutor(data.tutor);
-        } else {
-          setCurrentTutor(null);
-        }
-      } catch (error) {
-        console.error('Error fetching current tutor:', error);
-        setCurrentTutor(null);
-      } finally {
-        setLoadingCurrentTutor(false);
-      }
-    };
-
-    fetchCurrentTutor();
-  }, [currentTutorId]);
-
-  const searchTutors = useCallback(async (email: string) => {
-    if (!email || email.length < 3) {
-      setSearchResults([]);
-      setShowResults(false);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(`/api/tutors/search?email=${encodeURIComponent(email)}`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setSearchResults(data.tutors);
-        setShowResults(true);
-      } else {
-        setSearchResults([]);
-        setShowResults(false);
-      }
-    } catch (error) {
-      console.error('Error searching tutors:', error);
-      setSearchResults([]);
-      setShowResults(false);
-    } finally {
-      setIsSearching(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      searchTutors(searchTerm);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm, searchTutors]);
-
-  const handleTutorSelect = (tutor: Tutor) => {
-    onSelectTutor(tutor);
-    setSearchTerm(tutor.email);
-    setShowResults(false);
-  };
-
-  return (
-    <div className="relative">
-      <div className="space-y-2">
-        <Label>Search Tutor by Email</Label>
-        <div className="relative">
-          <Input
-            placeholder="Enter tutor email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => searchResults.length > 0 && setShowResults(true)}
-          />
-          {isSearching && (
-            <div className="absolute right-3 top-3">
-              <LoadingSpinner />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Currently Assigned Tutor */}
-      {currentTutor && (
-        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-blue-800">Currently Assigned:</span>
-                <Badge variant="default" className="bg-blue-100 text-blue-800">
-                  Assigned
-                </Badge>
-              </div>
-              <div className="font-medium mt-1">{currentTutor.full_name}</div>
-              <div className="text-sm text-gray-600">{currentTutor.email}</div>
-              {currentTutor.country && (
-                <div className="text-xs text-gray-500">{currentTutor.country}</div>
-              )}
-            </div>
-            <Badge variant={currentTutor.verified === '2' ? 'default' : 'secondary'}>
-              {currentTutor.verified === '2' ? 'Verified' : 'Unverified'}
-            </Badge>
-          </div>
-        </div>
-      )}
-
-      {loadingCurrentTutor && (
-        <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
-          <div className="flex items-center gap-2">
-            <LoadingSpinner />
-            <span className="text-sm text-gray-600">Loading current tutor...</span>
-          </div>
-        </div>
-      )}
-
-      {showResults && searchResults.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-          {searchResults.map((tutor) => (
-            <div
-              key={tutor.id}
-              className={`p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${
-                tutor.id === currentTutorId ? 'bg-blue-50 border-blue-200' : ''
-              }`}
-              onClick={() => handleTutorSelect(tutor)}
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium">{tutor.full_name}</div>
-                    {tutor.id === currentTutorId && (
-                      <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                        Current
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="text-sm text-gray-600">{tutor.email}</div>
-                  {tutor.country && (
-                    <div className="text-xs text-gray-500">{tutor.country}</div>
-                  )}
-                </div>
-                <Badge variant={tutor.verified === '2' ? 'default' : 'secondary'}>
-                  {tutor.verified === '2' ? 'Verified' : 'Unverified'}
-                </Badge>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {showResults && searchResults.length === 0 && searchTerm.length >= 3 && !isSearching && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg p-3">
-          <div className="text-sm text-gray-500">No tutors found with that email</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AssignmentManagement({ 
-  request, 
-  onAssignTutor, 
-  onSetPrices, 
-  loading 
-}: { 
-  request: Request; 
-  onAssignTutor: (tutorId: string, tutorPrice: string) => void;
-  onSetPrices: (tutorPrice?: string, studentPrice?: string) => void;
-  loading: boolean;
-}) {
-  const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
-  const [tutorPrice, setTutorPrice] = useState(request.tutor_price || '');
-  const [studentPrice, setStudentPrice] = useState(request.student_price || '');
-
-  const handleTutorSelect = (tutor: Tutor) => {
-    setSelectedTutor(tutor);
-  };
-
-  const handleAssignTutor = () => {
-    if (selectedTutor && tutorPrice) {
-      onAssignTutor(selectedTutor.id, tutorPrice);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="space-y-4">
-        <TutorSearchComponent 
-          onSelectTutor={handleTutorSelect}
-          selectedTutorId={request.tutor_id}
-          currentTutorId={request.tutor_id}
-        />
-        
-        {selectedTutor && (
-          <div className="p-3 bg-gray-50 rounded-md">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="font-medium">{selectedTutor.full_name}</div>
-                <div className="text-sm text-gray-600">{selectedTutor.email}</div>
-                {selectedTutor.country && (
-                  <div className="text-xs text-gray-500">{selectedTutor.country}</div>
-                )}
-              </div>
-              <Badge variant={selectedTutor.verified === '2' ? 'default' : 'secondary'}>
-                {selectedTutor.verified === '2' ? 'Verified' : 'Unverified'}
-              </Badge>
-            </div>
-          </div>
-        )}
-        
-        <div className="flex gap-2">
-          <Input
-            placeholder="Tutor Price"
-            value={tutorPrice}
-            onChange={(e) => setTutorPrice(e.target.value)}
-            type="number"
-          />
-          <Button
-            onClick={handleAssignTutor}
-            disabled={loading || !selectedTutor || !tutorPrice}
-          >
-            <UserPlus className="h-4 w-4 mr-2" />
-            Assign Tutor
-          </Button>
-        </div>
-      </div>
-      
-      <div className="space-y-2">
-        <Label>Price Management</Label>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Student Price"
-            value={studentPrice}
-            onChange={(e) => setStudentPrice(e.target.value)}
-            type="number"
-          />
-          <Button
-            onClick={() => onSetPrices(tutorPrice, studentPrice)}
-            disabled={loading}
-          >
-            <DollarSign className="h-4 w-4 mr-2" />
-            Update Prices
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TutorOffersManagement({ 
-  request, 
-  offers, 
-  loading 
-}: { 
-  request: Request; 
-  offers: any[];
-  loading: boolean;
-}) {
-  const { acceptTutorOffer, rejectTutorOffer } = useRequestManagementStore();
-  const [tutorDetails, setTutorDetails] = useState<{[key: string]: {email: string; nickname: string}}>({});
-  const [loadingTutors, setLoadingTutors] = useState<{[key: string]: boolean}>({});
-
-  const handleAcceptOffer = async (offerId: string) => {
-    try {
-      await acceptTutorOffer(offerId, request.id);
-    } catch (error) {
-      console.error('Error accepting offer:', error);
-    }
-  };
-
-  const handleRejectOffer = async (offerId: string) => {
-    try {
-      await rejectTutorOffer(offerId, request.id);
-    } catch (error) {
-      console.error('Error rejecting offer:', error);
-    }
-  };
-
-  // Fetch tutor details for each offer
-  useEffect(() => {
-    const fetchTutorDetails = async () => {
-      const tutorIds = offers.map(offer => offer.tutor_id).filter(Boolean);
-      const uniqueTutorIds = [...new Set(tutorIds)];
-      
-      for (const tutorId of uniqueTutorIds) {
-        if (!tutorDetails[tutorId] && !loadingTutors[tutorId]) {
-          setLoadingTutors(prev => ({ ...prev, [tutorId]: true }));
-          
-          try {
-            const response = await fetch(`/api/tutors/${tutorId}`);
-            const data = await response.json();
-            
-            if (data.success) {
-              setTutorDetails(prev => ({
-                ...prev,
-                [tutorId]: {
-                  email: data.tutor.email || 'N/A',
-                  nickname: data.tutor.nickname || 'N/A'
-                }
-              }));
-            }
-          } catch (error) {
-            console.error(`Error fetching tutor ${tutorId}:`, error);
-          } finally {
-            setLoadingTutors(prev => ({ ...prev, [tutorId]: false }));
-          }
-        }
-      }
-    };
-
-    if (offers.length > 0) {
-      fetchTutorDetails();
-    }
-  }, [offers, tutorDetails, loadingTutors]);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Tutor Offers</h3>
-        <Badge variant="outline">{offers.length} offers</Badge>
-      </div>
-      
-      {offers.length === 0 ? (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No tutor offers available for this request.
-          </AlertDescription>
-        </Alert>
-      ) : (
-        <div className="space-y-2">
-          {offers.map((offer) => {
-            const tutorInfo = tutorDetails[offer.tutor_id];
-            const isLoadingTutor = loadingTutors[offer.tutor_id];
-            
-            return (
-              <Card key={offer.id}>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      {isLoadingTutor ? (
-                        <div className="flex items-center gap-2">
-                          <LoadingSpinner size="sm" />
-                          <span>Loading tutor info...</span>
-                        </div>
-                      ) : tutorInfo ? (
-                        <div>
-                          <div className="font-medium">{tutorInfo.nickname}</div>
-                          <div className="text-sm text-gray-600">{tutorInfo.email}</div>
-                        </div>
-                      ) : (
-                        <div className="font-medium">Tutor ID: {offer.tutor_id}</div>
-                      )}
-                      <div className="text-sm text-gray-600 mt-1">Price: ${offer.price}</div>
-                      <Badge className={getRequestStatusColor(offer.status)}>
-                        {offer.status}
-                      </Badge>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => handleAcceptOffer(offer.id)}
-                        disabled={loading || offer.status === 'ACCEPTED'}
-                      >
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Accept
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleRejectOffer(offer.id)}
-                        disabled={loading || offer.status === 'rejected'}
-                      >
-                        <XCircle className="h-4 w-4 mr-2" />
-                        Reject
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function getRequestStatusLabel(status: string): string {
-  switch (status) {
-    case 'NEW':
+  switch (status?.toLowerCase()) {
+    case 'new':
       return 'Waiting for Bids';
-    case 'PENDING':
+    case 'pending':
       return 'Waiting for Bids';
-    case 'PENDING_PAYMENT':
+    case 'pending_payment':
       return 'Pending Payment';
-    case 'ONGOING':
+    case 'ongoing':
       return 'Ongoing';
-    case 'TUTOR_COMPLETED':
+    case 'tutor_completed':
       return 'Tutor Completed';
-    case 'COMPLETED':
+    case 'completed':
       return 'Completed';
-    case 'CANCELLED':
+    case 'cancelled':
       return 'Cancelled';
     default:
       return status;
@@ -1139,19 +409,19 @@ function getRequestStatusLabel(status: string): string {
 }
 
 function getRequestStatusColor(status: string): string {
-  switch (status) {
-    case 'NEW':
-    case 'PENDING':
+  switch (status?.toLowerCase()) {
+    case 'new':
+    case 'pending':
       return 'bg-gray-100 text-gray-800';
-    case 'PENDING_PAYMENT':
+    case 'pending_payment':
       return 'bg-blue-100 text-blue-800';
-    case 'ONGOING':
+    case 'ongoing':
       return 'bg-purple-100 text-purple-800';
-    case 'TUTOR_COMPLETED':
+    case 'tutor_completed':
       return 'bg-cyan-100 text-cyan-800';
-    case 'COMPLETED':
+    case 'completed':
       return 'bg-green-100 text-green-800';
-    case 'CANCELLED':
+    case 'cancelled':
       return 'bg-red-100 text-red-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -1159,6 +429,7 @@ function getRequestStatusColor(status: string): string {
 }
 
 export default function RequestsPage() {
+  const searchParams = useSearchParams();
   const {
     requests,
     loading,
@@ -1170,6 +441,8 @@ export default function RequestsPage() {
   const [filters, setFilters] = useState<RequestFilters>({});
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [columnsCount, setColumnsCount] = useState(3);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Create dynamic request type options from RequestType enum
   const requestTypeOptions = Object.values(RequestType).map(type => ({
@@ -1305,13 +578,13 @@ export default function RequestsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All statuses</SelectItem>
-                  <SelectItem value="NEW">New</SelectItem>
-                  <SelectItem value="PENDING">Pending</SelectItem>
-                  <SelectItem value="PENDING_PAYMENT">Pending Payment</SelectItem>
-                  <SelectItem value="ONGOING">Ongoing</SelectItem>
-                  <SelectItem value="TUTOR_COMPLETED">Tutor Completed</SelectItem>
-                  <SelectItem value="COMPLETED">Completed</SelectItem>
-                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="pending_payment">Pending Payment</SelectItem>
+                  <SelectItem value="ongoing">Ongoing</SelectItem>
+                  <SelectItem value="tutor_completed">Tutor Completed</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
