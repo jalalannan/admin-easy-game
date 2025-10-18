@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const seen = searchParams.get('seen');
 
     // Build Firestore query
-    let query = adminDb.collection(COLLECTION_NAME);
+    let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData> = adminDb.collection(COLLECTION_NAME);
 
     // Apply filters
     if (seen !== null) {
@@ -83,52 +83,6 @@ export async function POST(request: NextRequest) {
     console.error('Error creating admin notification:', error);
     return NextResponse.json(
       { error: 'Failed to create admin notification' },
-      { status: 500 }
-    );
-  }
-}
-
-// PUT /api/admin-notifications/[id] - Update a notification
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const data = await request.json();
-
-    const updateData = {
-      ...data,
-      updatedAt: adminDb.FieldValue.serverTimestamp(),
-    };
-
-    await adminDb.collection(COLLECTION_NAME).doc(id).update(updateData);
-    
-    return NextResponse.json({ message: 'Notification updated successfully' });
-  } catch (error) {
-    console.error('Error updating admin notification:', error);
-    return NextResponse.json(
-      { error: 'Failed to update admin notification' },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE /api/admin-notifications/[id] - Delete a notification
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    
-    await adminDb.collection(COLLECTION_NAME).doc(id).delete();
-    
-    return NextResponse.json({ message: 'Notification deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting admin notification:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete admin notification' },
       { status: 500 }
     );
   }
