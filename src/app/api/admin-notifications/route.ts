@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/config/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 const COLLECTION_NAME = 'admin_notifications';
 
@@ -65,10 +66,10 @@ export async function POST(request: NextRequest) {
       senderNickname: data.senderNickname || '',
       message: data.message,
       content: data.content || `${data.senderNickname || data.senderName} sent a message: "${data.message}"`,
-      timestamp: adminDb.FieldValue.serverTimestamp(),
+      timestamp: FieldValue.serverTimestamp(),
       seen: false,
-      createdAt: adminDb.FieldValue.serverTimestamp(),
-      updatedAt: adminDb.FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
     };
 
     const docRef = await adminDb.collection(COLLECTION_NAME).add(notificationData);
