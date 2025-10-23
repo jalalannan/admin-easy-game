@@ -274,6 +274,25 @@ export interface RequestFilters {
   tutor_id?: string;
 }
 
+// Pagination Types
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+  lastVisible?: any; // Firestore document snapshot
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    currentPage: number;
+    pageSize: number;
+    totalItems?: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    lastVisible?: any;
+  };
+}
+
 // Field configurations for different assistance types
 export interface RequestFieldConfig {
   fields: string[];
