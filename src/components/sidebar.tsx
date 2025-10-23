@@ -100,6 +100,12 @@ const getNavigationItems = (hasPermission: (resource: string, action: string) =>
     permission: { resource: 'users', action: 'read' } 
   },
   { 
+    name: "Resources", 
+    href: "/dashboard/resources", 
+    icon: Database, 
+    permission: { resource: 'resources', action: 'read' } 
+  },
+  { 
     name: "Roles & Permissions", 
     href: "/dashboard/roles", 
     icon: Key, 
